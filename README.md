@@ -16,21 +16,21 @@ The file “makefile.comp” must contain the entrance for Fortran compiler inst
 well as the appropriated compilation parameters.
 To create the “makefile.comp”, copy or rename one of the makefile_<compiler> to makefile.comp.
 See the examples bellow
-    cp makefile_g95 makefile.comp (for g95 compiler)
-    cp makefile_ifort makefile.comp ( for Intel Fortran compiler)
-    cp makefile_gfortran makefile.comp (for gfortran compiler)
+    'cp makefile_g95 makefile.comp (for g95 compiler)'
+    'cp makefile_ifort makefile.comp ( for Intel Fortran compiler)'
+    'cp makefile_gfortran makefile.comp (for gfortran compiler)'
 
 #### 2.1.2 Run the command "make" to compile
 
 # 3 - Environment Variables
 It is necessary to configure the following environment variables
-    MBUFR_TABLES = <Directory Location of necessary tables in the system>
-    PATH=<Directory Location of binary files in the system >
+    'MBUFR_TABLES = <Directory Location of necessary tables in the system>'
+    'PATH=<Directory Location of binary files in the system >'
 
 ## 3.1 Setting the environment variables on Linux (bash environment)
 Example:
 Include in .bashrc file the followed lines
-    export MBUFR_TABLES=/home/user/mbufrtools/bufrtables
-    export PATH=/home/user/mbuufrtools/bin
+    'export MBUFR_TABLES=/home/user/mbufrtools/bufrtables'
+    'export PATH=/home/user/mbuufrtools/bin'
 type source .bashrc to update the modification
 
