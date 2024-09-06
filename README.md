@@ -2,11 +2,11 @@
 TOOLS for encoding and decoding Meteorological data in WMO-BUFR format
 
 ## 1- Main tools in this package
--BUFRCONTENT : List the contents of one or more BUFR files
--BUFRSPLIT : Separates the messages from a BUFR file to different files.
--BUFRDUMP : Decodes a BUFR file and converts it into a text file
--BUFRGEN: Encodes a BUFR file using a text file as input. ( This text file must have the same format of the decoded text files by BUFRDUMP)
--BUFR2CSV: Decodes a BUFR file and converts it into a text file separated by comma (Suitable to be read in MS-EXCEL, LibreOffice Calc, etc)
+- BUFRCONTENT : List the contents of one or more BUFR files
+- BUFRSPLIT : Separates the messages from a BUFR file to different files.
+- BUFRDUMP : Decodes a BUFR file and converts it into a text file
+- BUFRGEN: Encodes a BUFR file using a text file as input. ( This text file must have the same format of the decoded text files by BUFRDUMP)
+- BUFR2CSV: Decodes a BUFR file and converts it into a text file separated by comma (Suitable to be read in MS-EXCEL, LibreOffice Calc, etc)
 
 ## 2 - Compiling MBUFRTOOLS
 
