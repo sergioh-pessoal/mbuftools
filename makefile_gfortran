@@ -1,0 +1,93 @@
+#####################################################################
+#       Compilation parameters for MBUFRTOOLS with GFORTRAN compiler 
+#####################################################################
+# F90=gfortran -ffree-form  -03                       
+# F90=gfortran -ffree-form  -g  -fbacktrace #-fcheck=all 
+# F90=gfortran -ffree-form  -g # -fbacktrace -fcheck=all 
+  F90=gfortran -ffree-form  -g -ffpe-trap='invalid','zero','overflow'
+#-------------------------------------------------------------------
+# PRECISION 
+#---------------------------------------------------------------------
+
+DOUBLE_PRECISION = -fdefault-real-8     # GFORTRAN , CRAY
+#DOUBLE_PRECISION = -r8                 # G95
+#DOUBLE_PRECISION = -real-size 64       # IFORT
+
+
+
+# Para debug usar O2 para producao usar O3
+#--------------------------------------------------------------------------
+#  -g           |This option actually makes debugging possible by requesting 
+#               |the compiler to produce debugging information intended to be 
+#               |used by interactive debugger (GDB).
+#-----------------------------------------------------------------------------
+#     -O0       |basically tells the compiler to make no optimisations. 
+#               |Optimiser can remove some local variables, merge some code blocks,
+#               |etc. and as an outcome it can make debugging unpredictable.
+#               | The price for -O0 option is very slow code execution, but starting 
+#               |from version 4.8 GCC compilers (including the Fortran one) 
+#               |accept a newly introduced optimisation level -Og:
+#-------------------------------------------------------------------------------
+#    -Og         |Optimize debugging experience. -Og enables optimizations 
+#                |that do not interfere with debugging. It should be the 
+#                |optimization level of choice for the standard edit-compile-debug
+#                |cycle, offering a reasonable level of optimization while 
+#                |maintaining fast compilation and a good debugging experience.
+#-------------------------------------------------------------------------------
+#-Wall           |enable all the warnings about constructions that some users 
+#                |consider questionable,and that are easy to avoid 
+#                |(or modify to prevent the warning), even in conjunction 
+#                |with macros.
+#------------------------------------------------------------------------------
+#-Wextra         |enable some extra warning flags that are not enabled by -Wall.
+#------------------------------------------------------------------------------
+#-pedantic       |generate warnings about language features that are supported by
+#                |gfortran but are not part of the official Fortran 95 standard.
+#                |It possible to be even more "pedantic" and use -std=f95 flag
+#                |for warnings to become errors.
+#------------------------------------------------------------------------------
+#-fimplicit-none |to "specify that no implicit typing is allowed, unless 
+#                |overridden by explicit IMPLICIT statements. This is the 
+#                |equivalent of adding implicit none to the start of every procedure.
+#-------------------------------------------------------------------------------
+#-fcheck=all     |enable run-time tests", such as, for instance, array bounds checks.
+#-------------------------------------------------------------------------------
+#-fbacktrace     |specify that, when a runtime error is encountered or a deadly
+#                |signal is emitted (segmentation fault, illegal instruction, 
+#                |bus error or floating-point exception), the Fortran runtime 
+#                |library should output a backtrace of the error."
+#------------------------------------------------------------------------------
+#-ffpe-trap=list |Specify a list of floating point exception traps to enable. 
+#                |On most systems, if a floating point exception occurs and the 
+#                |trap for that exception is enabled,a SIGFPE signal will be sent and 
+#                |the program being aborted, producing a core file useful for debugging.
+#                |list is a (possibly empty) comma-separated list of the following exceptions: 
+#                | ‘invalid’   (invalid floating point operation, such as SQRT(-1.0)), 
+#                | ‘zero’      (division by zero), 
+#                | ‘overflow’  (overflow in a floating point operation),
+#                | ‘underflow’ (underflow in a floating point operation), 
+#                | ‘inexact’   (loss of precision during operation), and 
+#                | ‘denormal’  (operation performed on a denormal value).
+#                |
+#                |The first five exceptions correspond to the five IEEE 754 exceptions, whereas
+#                | the last one (‘denormal’)  is not part of the IEEE 754 standard but is
+#                | available on some common architectures such as x86.
+#                |
+#                |The first three exceptions (‘invalid’, ‘zero’, and ‘overflow’) often indicate
+#                | serious errors, and unless the program has provisions for dealing with these
+#                | exceptions, enabling traps for these three exceptions is probably a good idea.
+#                |
+#                | Many, if not most, floating point operations incur loss of precision due to 
+#                |rounding,and hence the ffpe-trap=inexact is likely to be uninteresting in 
+#                |practice.
+#                |
+#                |By default no exception traps are enabled.
+#------------------------------------------------------------------------------
+#-ffpe-summary=list
+#
+#    Specify a list of floating-point exceptions, whose flag status is printed to ERROR_UNIT when invoking STOP and ERROR STOP.
+#    list can be either ‘none’, ‘all’ or a comma-separated list of the following exceptions: 
+#   ‘invalid’, ‘zero’, ‘overflow’, ‘underflow’, ‘inexact’ and ‘denormal’. (See -ffpe-trap for a description of the exceptions.)
+#
+#    By default, a summary for all exceptions but ‘inexact’ is shown.
+#-------------------------------------------------------------------------------

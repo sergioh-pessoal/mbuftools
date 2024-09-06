@@ -1,0 +1,20 @@
+201YYY Change data width 
+202YYY Change scale      
+203YYY Change reference 
+204YYY Add associated field
+205YYY Signify character 
+206YYY Signify data width for 
+221YYY Data not present
+222000 Quality information
+223000 Substituted values .
+223255 Substituted values (data item containing	marker operator)
+224000 First order statistical values follow 
+224255 First order statistical values marker operator
+225000 Difference statistical  ( relate to the values follow)
+225255 Difference statistical (indicated by the preceding 0 08 024 element) 
+232000 Replaced/retained .
+232255 Replaced/retained (data item containing value marker operator)
+235000 Cancel backward data.
+236000 Define data present 
+237000 Use defined data resent bit-map
+237255 Cancel use defined present bit-map

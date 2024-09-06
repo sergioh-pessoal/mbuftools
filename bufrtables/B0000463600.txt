@@ -1,0 +1,146 @@
+ 001007 SAID     SATELLITE IDENTIFIER                                    CODE TABLE                 0            0  10
+ 001031 GCLONG   ORIGINATING/GENERATINGCENTER                            CODE TABLE                 0            0  16
+ 001032 GNAP     GENERATING APPLICATION                                  CODE TABLE                 0            0   8
+ 001033 OGCE     IDENTIFICATION OF ORIGINATING/GENERATING CENTER         CODE TABLE                 0            0   8
+ 001034 GSES     IDENTIFICATION OF ORIGINATING/GENERATING SUB-CENTER     CODE TABLE                 0            0   8
+ 002019 SIID     SATELLITE INSTRUMENTS                                   CODE TABLE                 0            0  11
+ 002020 SCLF     SATELLITE CLASSIFICATION                                CODE TABLE                 0            0   9
+ 002024 IMHC     INTEGRATED MEAN HUMIDITY COMPUTATIONAL METHOD           CODE TABLE                 0            0   4
+ 002028 SSNX     SEGMENT SIZE AT NADIR IN X DIRECTION                    M                          0            0  18
+ 002029 SSNY     SEGMENT SIZE AT NADIR IN Y DIRECTION                    M                          0            0  18
+ 002048 SSIN     SATELLITE SENSOR INDICATOR                              CODE TABLE                 0            0   4
+ 002104 ANPO     ANTENNA POLARIZATION                                    CODE TABLE                 0            0   4
+ 002111 RAIA     RADAR INCIDENCE ANGLE                                   DEGREE                     1            0  10
+ 002141 MTYP     MEASUREMENT TYPE                                        CCITT IA5                  0            0  24
+ 002150 INCN     TOVS/ATOVS/AVHRR INSTRUMENTATION CHANNEL NUMBER         CODE TABLE                 0            0   6
+ 002151 RAID     RADIOMETER IDENTIFIER                                   CODE TABLE                 0            0  11
+ 002152 SIDP     SATELLITE INSTRUMENT DATA USED IN PROCESSING            FLAG TABLE                 0            0  31
+ 002153 SCCF     SATELLITE CHANNEL CENTER FREQUENCY                      HZ                        -8            0  26
+ 002154 SCBW     SATELLITE CHANNEL BANDWIDTH                             HZ                        -8            0  26
+ 002165 RDTF     RADIANCE TYPE FLAGS                                     FLAG TABLE                 0            0  15
+ 002166 RDTP     RADIANCE TYPE                                           CODE TABLE                 0            0   4
+ 002167 RDCM     RADIANCE COMPUTATIONALMETHOD                            CODE TABLE                 0            0   4
+ 004001 YEAR     YEAR                                                    YEAR                       0            0  12
+ 004002 MNTH     MONTH                                                   MONTH                      0            0   4
+ 004003 DAYS     DAY                                                     DAY                        0            0   6
+ 004004 HOUR     HOUR                                                    HOUR                       0            0   5
+ 004005 MINU     MINUTE                                                  MINUTE                     0            0   6
+ 004006 SECO     SECOND                                                  SECOND                     0            0   6
+ 004026 TPSE     TIME PERIOD OR DISPLACEMENT                             SECOND                     0        -4096  13
+ 005001 CLATH    LATITUDE (HIGH ACCURACY)                                DEGREE                     5     -9000000  25
+ 005002 CLAT     LATITUDE (COARSE ACCURACY)                              DEGREE                     2        -9000  15
+ 005021 BEARAZ   BEARING OR AZIMUTH                                      DEGREE TRUE                2            0  16
+ 005022 SOLAZI   SOLAR AZIMUTH                                           DEGREE TRUE                2            0  16
+ 005040 ORBN     ORBIT NUMBER                                            NUMERIC                    0            0  24
+ 005041 SLNM     SCAN LINE NUMBER                                        NUMERIC                    0            0   8
+ 005042 CHNM     CHANNEL NUMBER                                          NUMERIC                    0            0   6
+ 005043 FOVN     FIELD OF VIEW NUMBER                                    NUMERIC                    0            0   8
+ 005045 FORN     FIELD OF REGARD NUMBER                                  NUMERIC                    0            0   8
+ 005060 YAPCG    Y ANGULAR POSITION OF CENTER OF GRAVITY                 DEGREE                     6     -8000000  24
+ 005061 ZAPCG    Z ANGULAR POSITION OF CENTER OF GRAVITY                 DEGREE                     6     -8000000  24
+ 006001 CLONH    LONGITUDE (HIGH ACCURACY)                               DEGREE                     5    -18000000  26
+ 006002 CLON     LONGITUDE (COARSE ACCURACY)                             DEGREE                     2       -18000  16
+ 006029 WVNM     WAVE NUMBER                                             M**-1                      1            0  22
+ 007001 SELV     HEIGHT OF STATION                                       M                          0         -400  15
+ 007002 HMSL     HEIGHT OR ALTITUDE                                      M                         -1          -40  16
+ 007004 PRLC     PRESSURE                                                PASCALS                   -1            0  14
+ 007022 SOEL     SOLAR ELEVATION                                         DEGREE                     2        -9000  15
+ 007024 SAZA     SATELLITE ZENITH ANGLE                                  DEGREE                     2        -9000  15
+ 007025 SOZA     SOLAR ZENITH ANGLE                                      DEGREE                     2        -9000  15
+ 007192 SSGA     SATELLITE-SUN GLINT ANGLE                               DEGREE                     1            0  11
+ 008003 VSAT     VERTICAL SIGNIFICANCE (SATELLITE OBSERVATIONS)          CODE TABLE                 0            0   6
+ 008007 DIMS     DIMENSIONAL SIGNIFICANCE                                CODE TABLE                 0            0   4
+ 008011 METFET   METEOROLOGICAL FEATURE                                  CODE TABLE                 0            0   6
+ 008012 LSQL     LAND/SEA QUALIFIER                                      CODE TABLE                 0            0   2
+ 008021 TSIG     TIME SIGNIFICANCE                                       CODE TABLE                 0            0   5
+ 008023 FOST     FIRST ORDER STATISTICS                                  CODE TABLE                 0            0   6
+ 008033 MDPC     METHOD OF DEVIATION OFPERCENTAGE CONFIDENCE             CODE TABLE                 0            0   7
+ 008065 SGIN     SUN-GLINT INDICATOR                                     CODE TABLE                 0            0   2
+ 008070 TAPQ     TOVS/ATOVS PRODUCT IDENTIFIER                           CODE TABLE                 0            0   4
+ 008075 STKO     ASCENDING/DESCENDING ORBIT QUALIFIER                    CODE TABLE                 0            0   2
+ 008076 TOBD     TYPE OF BAND                                            CODE TABLE                 0            0   6
+ 010001 HOLS     HEIGHT OF LAND SURFACE                                  M                          0         -400  15
+ 010002 HITE     GEOPOTENTIAL HEIGHT                                     M                         -1          -40  16
+ 012063 TMBRST   BRIGHTNESS TEMPERATURE                                  KELVIN                     1            0  12
+ 012064 TMINST   INSTRUMENT TEMPERATURE                                  KELVIN                     1            0  12
+ 012065 SDTB     STANDARD DEVIATION BRIGHTNESS TEMPERATURE               KELVIN                     1            0  12
+ 012066 TMANT    ANTENNA TEMPERATURE                                     K                          2            0  16
+ 012070 WLTM     WARM LOAD TEMPERATURE                                   KELVIN                     2            0  16
+ 012075 SPRD     SPECTRAL RADIANCE                                       WM**(-3)SR**(-1)          -3            0  16
+ 012076 RDNE     RADIANCE                                                WM**(-2)SR**(-1)           3            0  16
+ 012158 NEDTCO   NOISE-EQUIVALENT DELTATEMPERATURE VIEWING COLD TARGET   K                          2            0  12
+ 012159 NEDTWA   NOISE-EQUIVALENT DELTATEMPERATURE VIEWING WARM TARGET   K                          2            0  12
+ 012163 TMBR     BRIGHTNESS TEMPERATURE(HIGH ACCURACY)                   KELVIN                     2            0  16
+ 012206 CSTC     COLD SPACE TEMPERATURECORRECTION                        KELVIN                     2            0  10
+ 013003 REHU     RELATIVE HUMIDITY                                       %                          0            0   7
+ 013040 SFLG     SURFACE FLAG                                            CODE TABLE                 0            0   4
+ 014027 ALBD     ALBEDO                                                  %                          0            0   7
+ 014043 SCHRAD   CHANNEL RADIANCE                                        W M**-2 SR**-1 UM*         4            0  23
+ 014044 SRAD     CHANNEL RADIANCE                                        W M**-2 SR**-1 CM          7      -100000  22
+ 014046 SCRA     SCALED IASI RADIANCE                                    W M**-2 SR**-1 M           0            0  16
+ 014047 SMRA     SCALED MEAN AVHRR RADIANCE                              W M**-2 SR**-1 M           0            0  31
+ 014048 SSDR     SCALED STANDARD DEVIATION OF AVHRR RADIANCE             W M**-2 SR**-1 M           0            0  31
+ 020010 TOCC     CLOUD COVER (TOTAL)                                     %                          0            0   7
+ 020012 CLTP     CLOUD TYPE                                              CODE TABLE                 0            0   6
+ 020014 HOCT     HEIGHT OF TOP OF CLOUD                                  M                         -1          -40  11
+ 020029 RFLAG    RAIN FLAG                                               CODE TABLE                 0            0   2
+ 020081 CLDMNT   CLOUD AMOUNT IN SEGMENT                                 %                          0            0   7
+ 020082 NCLDMNT  AMOUNT SEGMENT CLOUD FREE                               %                          0            0   7
+ 020199 CLAVR    CLOUD FROM AVHRR (CLAVR) CLOUD MASK                     CODE TABLE                 0            0   3
+ 021083 WTCA     WARM TARGET CALIBRATION                                 NUMERIC                    0            0  16
+ 021084 CTCA     COLD TARGET CALIBRATION                                 NUMERIC                    0            0  16
+ 021166 ALFR     LAND FRACTION                                           NUMERIC                    3            0  10
+ 025050 APCOMP   PRINCIPAL COMPONENT SCORE                               NUMERIC                    4      -131072  18
+ 025051 AVHCST   AVHRR CHANNEL COMBINATION                               FLAG TABLE                 0            0   7
+ 025052 APCFIT   LOG OF PRINCIPAL COMPONENTS NORMALIZED FIT TO DATA      NUMERIC                    4            0  15
+ 025054 SSID     SSMIS SUBFRAME ID NUMBER                                NUMERIC                    0            0   5
+ 025055 MUHO     MULTIPLEXOR HOUSEKEEPING                                KELVIN                     2            0  16
+ 025070 MJFC     MAJOR FRAME COUNT                                       NUMERIC                    0            0   4
+ 025075 SACV     SATELLITE ANTENNA CORRECTIONS VERSION NUMBER            NUMERIC                    0            0   5
+ 025076 LOGRCW   LOG-10 OF (TEMPERATURE-RADIANCE CENTRAL WAVENUMBER)     LOG/M                      8            0  30
+ 025077 BWCC1    BANDWIDTH CORRECTION COEFFICIENT 1 FOR ATOVS            NUMERIC                    5      -100000  18
+ 025078 BWCC2    BANDWIDTH CORRECTION COEFFICIENT 2 FOR ATOVS            NUMERIC                    5            0  17
+ 025081 IANG     INCIDENCE ANGLE                                         DEGREE                     3            0  17
+ 025082 AANG     AZIMUTH ANGLE                                           DEGREE                     3            0  19
+ 025085 FCPH     FRACTION OF CLEAR PIXELS IN HIRS FOV                    NUMERIC                    0            0   7
+ 025140 STCH     START CHANNEL                                           NUMERIC                    0            0  14
+ 025141 ENCH     END CHANNEL                                             NUMERIC                    0            0  14
+ 025142 CHSF     CHANNEL SCALE FACTOR                                    NUMERIC                    0            0   6
+ 027031 PD00     IN DIRECTION OF  0 DEGE, DISTANCE FROM EARTH'S CENTER   M                          2  -1073741824  31
+ 028031 PD90     IN DIRECTION OF 90 DEGE, DISTANCE FROM EARTH'S CENTER   M                          2  -1073741824  31
+ 030021 NPPR     NUMBER OF PIXELS PER ROW                                NUMERIC                    0            0  12
+ 030022 NPPC     NUMBER OF PIXELS PER COLUMN                             NUMERIC                    0            0  12
+ 031000 DRF1BIT                                                          NUMERIC                    0            0   1
+ 031001 DRF8BIT                                                          NUMERIC                    0            0   8
+ 031002 DRF16BIT                                                         NUMERIC                    0            0  16
+ 031031 DPRI     DATA PRESENT INDICATOR                                  FLAG TABLE                 0            0   1
+ 033003 QMRKH    QUALITY INFORMATION                                     CODE TABLE                 0            0   3
+ 033007 PCCF     PERCENT CONFIDENCE                                      PERCENT                    0            0   7
+ 033030 SLSF     SCAN LINE STATUS FLAGSFOR ATOVS                         FLAG TABLE                 0            0  24
+ 033031 SLQF     SCAN LINE QUALITY FLAGS FOR ATOVS                       FLAG TABLE                 0            0  24
+ 033032 ACQF     CHANNEL QUALITY FLAGS FOR ATOVS                         FLAG TABLE                 0            0  24
+ 033033 FOVQ     FIELD OF VIEW QUALITY FLAGS FOR ATOVS                   FLAG TABLE                 0            0  24
+ 033060 QGFQ     INDIVIDUAL IASI-SYSTEMQUALITY FLAG                      CODE TABLE                 0            0   2
+ 033061 QGQI     INSTR. NOISE PERF. INDICATOR (SPECTRAL & RADIOMETRIC)   %                          0            0   7
+ 033062 QGQIL    GEOMETRIC QUALITY INDEX INDICATOR                       %                          0            0   7
+ 033063 QGQIR    INSTR. NOISE PERF. INDICATOR (RADIOMETRIC CALIBRATION)  %                          0            0   7
+ 033064 QGQIS    INSTRUMENT NOISE PERF.INDICATOR (SPECTRAL CALIBRATION)  %                          0            0   7
+ 033065 QGSSQ    OUTPUT OF TEC FUNCTION                                  NUMERIC                    0            0  24
+ 033075 NSQF     SCAN LEVEL QUALITY FLAGS                                FLAG TABLE                 0            0  13
+ 033076 NCQF     CALIBRATION QUALITY FLAGS                               FLAG TABLE                 0            0   9
+ 033077 NFQF     FIELD OF VIEW QUALITY FLAGS                             FLAG TABLE                 0            0  19
+ 033078 NGQI     GEOLOCATION QUALITY                                     CODE TABLE                 0            0   4
+ 033079 ATMSGQ   GRANULE LEVEL QUALITY FLAGS                             FLAG TABLE                 0            0  16
+ 033080 ATMSSQ   SCAN LEVEL QUALITY FLAGS                                FLAG TABLE                 0            0  20
+ 033081 ATMSCHQ  CHANNEL DATA QUALITY FLAGS                              FLAG TABLE                 0            0  12
+ 033083 VIIRSQ   RADIANCE DATA QUALITY FLAGS                             FLAG TABLE                 0            0  16
+ 033254 TPQC2    2-BIT INDICATOR OF QUALITY                              CODE TABLE                 0            0   2
+ 035200 RSRD     RESTRICTIONS ON REDISTRIBUTION                          FLAG TABLE                 0            0   9
+ 035201 EXPRSRD  EXPIRATION OF RESTRICTIONS ON REDISTRIBUTION            HOURS                      0            0   8
+ 050210 SLQFS    SCAN LINE QUALITY FLAGS FOR FOR SAPHIR/MADRAS           FLAG TABLE                 0            0  10
+ 050211 PLMD     PAYLOAD MODE FOR SAPHIR                                 CODE TABLE                 0            0   3
+ 050213 SMODE    SATELLITE MODE FOR SAPHIR/MADRAS                        CODE TABLE                 0            0   4
+ 050214 CHQF     CHANNEL QUALITY FLAG FOR SAPHIR/MADRAS                  FLAG TABLE                 0            0  11
+ 050215 CLFG     CALIBRATION FLAGS FOR SAPHIR/MADRAS                     CODE TABLE                 0            0   3
+ 063000 BYTCNT                                                           BYTES                      0            0  16
+ 063255 BITPAD                                                           NONE                       0            0   1

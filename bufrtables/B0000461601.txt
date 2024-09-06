@@ -1,0 +1,53 @@
+ 000001 TABLE A: ENTRY                                                   CCITTIA5                   0            0  24
+ 000002 TABLE A: DATA CATEGORY DESCRIPTION, LINE 1                       CCITTIA5                   0            0 256
+ 000003 TABLE A: DATA CATEGORY DESCRIPTION, LINE 2                       CCITTIA5                   0            0 256
+ 000004 BUFR/CREX MASTER TABLE                                           CCITTIA5                   0            0  16
+ 000005 BUFR/CREX EDITION NUMBER                                         CCITTIA5                   0            0  24
+ 000006 BUFR MASTER TABLE VERSION NUMBER                                 CCITTIA5                   0            0  16
+ 000007 CREX MASTER TABLE VERSION NUMBER                                 CCITTIA5                   0            0  16
+ 000008 BUFR LOCAL TABLE VERSION NUMBER                                  CCITTIA5                   0            0  16
+ 000010 F DESCRIPTOR TO BE ADDED OR DEFINED                              CCITTIA5                   0            0   8
+ 000011 X DESCRIPTOR TO BE ADDED OR DEFINED                              CCITTIA5                   0            0  16
+ 000012 Y DESCRIPTOR TO BE ADDED OR DEFINED                              CCITTIA5                   0            0  24
+ 000013 ELEMENT NAME, LINE 1                                             CCITTIA5                   0            0 256
+ 000014 ELEMENT NAME, LINE 2                                             CCITTIA5                   0            0 256
+ 000015 UNITS NAME                                                       CCITTIA5                   0            0 192
+ 000016 UNITS SCALE SIGN                                                 CCITTIA5                   0            0   8
+ 000017 UNITS SCALE                                                      CCITTIA5                   0            0  24
+ 000018 UNITS REFERENCE SIGN                                             CCITTIA5                   0            0   8
+ 000019 UNITS REFERENCE VALUE                                            CCITTIA5                   0            0  80
+ 000020 ELEMENT DATA WIDTH                                               CCITTIA5                   0            0  24
+ 000024 CODE FIGURE                                                      CCITTIA5                   0            0  64
+ 000025 CODE FIGURE MEANING                                              CCITTIA5                   0            0  62
+ 000026 BIT NUMBER                                                       CCITTIA5                   0            0  16
+ 000027 BIT NUMBER MEANING                                               CCITTIA5                   0            0  62
+ 000030 DESCRIPTOR DEFINING SEQUENCE                                     CCITTIA5                   0            0  48
+ 001001 WMO BLOCK NUMBER                                                 NUMERIC                    0            0   7
+ 001002 WMO STATION NUMBER                                               NUMERIC                    0            0  10
+ 001003 WMO REGION NUMBER/GEOGRAPHICAL AREA                              CODE TABLE 1003            0            0   3
+ 001004 WMO REGION SUB-AREA                                              NUMERIC                    0            0   3
+ 001005 BUOY/PLATFORM IDENTIFIER                                         NUMERIC                    0            0  17
+ 001006 AIRCRAFT FLIGHT NUMBER                                           CCITTIA5                   0            0  64
+ 001007 SATELLITE IDENTIFIER                                             CODE TABLE 1007            0            0  10
+ 001008 AIRCRAFT REGISTRATION NUMBER OR OTHER IDENTIFICATION             CCITTIA5                   0            0  64
+ 001009 TYPE OF COMMERCIAL AIRCRAFT                                      CCITTIA5                   0            0  64
+ 001010 STATIONARY BUOY PLATFORM IDENTIFIER; E.G. C-MAN BUOYS            CCITTIA5                   0            0  64
+ 001011 SHIP OR MOBILE LAND STATION IDENTIFIER                           CCITTIA5                   0            0  72
+ 001012 DIRECTION OF MOTION OF MOVING OBSERVING PLATFORM (DEGREE TRUE)   DEG                        0            0   9
+ 001013 SPEED OF MOTION OF MOVING OBSERVING PLATFORM                     M/S                        0            0  10
+ 001014 PLATFORM DRIFT SPEED (HIGH PRECISION)                            M/S                        2            0  10
+ 001015 STATION OR SITE NAME                                             CCITTIA5                   0            0 160
+ 001018 SHORT STATION OR SITE NAME                                       CCITTIA5                   0            0  40
+ 001019 LONG STATION OR SITE NAME                                        CCITTIA5                   0            0 256
+ 001020 WMO REGION SUB-AREA                                              NUMERIC                    0            0   4
+ 001021 SYNOPTIC FEATURE IDENTIFIER                                      NUMERIC                    0            0  14
+ 001022 NAME OF FEATURE                                                  CCITTIA5                   0            0 224
+ 001023 OBSERVATION SEQUENCE NUMBER                                      NUMERIC                    0            0   9
+ 001024 WIND SPEED SOURCE                                                CODE TABLE 1024            0            0   5
+ 001025 STORM IDENTIFIER                                                 CCITTIA5                   0            0  24
+ 001026 WMO STORM NAME                                                   CCITTIA5                   0            0  64
+ 001027 WMO LONG STORM NAME                                              CCITTIA5                   0            0  80
+ 001028 AEROSOL OPTICAL DEPTH (AOD) SOURCE                               CODE TABLE 1028            0            0   5
+ 001029 SSI SOURCE                                                       CODE TABLE 1029            0            0   5
+ 001030 NUMERICAL MODEL IDENTIFIER                                       CCITTIA5                   0            0 128
+ 001031 IDENTIFICATION OF ORIGINATING/GENERATING CENTRE                  CODE TABLE 1031            0            0  16
