@@ -12,7 +12,10 @@ DIRTOOLS=src/tools
 DIRACESS=src/acessories
 DIRSHARED=src/shared
 DIRBIN=bin
+DIRSAO=src/sao2bufr
 
+SAO2BUFRF     = $(DIRSAO)/sao2bufr.f90
+MSAOF         = $(DIRSAO)/msao.f90
 BUFRDUMPF     = $(DIRTOOLS)/bufrdump.f90
 BUFRTIMEF     = $(DIRTOOLS)/bufrtime.f90
 BUFRLISTF     = $(DIRTOOLS)/bufrcontent.f90
@@ -61,18 +64,19 @@ TBLCHECK     =  $(DIRBIN)/tblcheckformat
 TBLOSCAR     =  $(DIRBIN)/tbloscar
 LISTASUB     =  $(DIRBIN)/listasubsets
 EDITSEC1     =  $(DIRBIN)/editsec1
-
+SAO2BUFR     =  ./run/sao2bufr
 
 
 #
 #
 #
-all:  $(BUFRDUMP) $(BUFRGEN) $(BUFRLIST)  $(BUFRQC) $(BUFRTIME) $(BUFRSPLIT)  $(TBLDUMP) $(TBLCONV) $(BUFRASCII) $(TBLCHECK) $(TBLOSCAR) $(EDITSEC1) $(BUFRCHECK)
+all:  $(BUFRDUMP) $(BUFRGEN) $(BUFRLIST)  $(BUFRQC) $(BUFRTIME) $(BUFRSPLIT)  $(TBLDUMP) $(TBLCONV) $(TBLCHECK) $(TBLOSCAR) $(EDITSEC1) $(BUFRCHECK) $(SAO2BUFR)
 
 #
 # Basic tools 
 #
 $(BUFRDUMP) : $(BUFRDUMPF) mbufr.o stringflib.o mcodesflags.o
+	mkdir -p $(DIRBIN)
 	$(F90)  -o $@ $(BUFRDUMPF) mbufr.o stringflib.o mcodesflags.o
 $(LISTASUB) : $(LISTASUBF) mbufr.o stringflib.o datelib.o
 	$(F90) -o $@ $(LISTASUBF) mbufr.o stringflib.o datelib.o
@@ -106,6 +110,11 @@ $(PLOTBUFRTYPE): $(PLOTBUFRTYPEF) mbufr.o mgrads_obs.o stringflib.o datelib.o
 	$(F90) -o $@ $(PLOTBUFRTYPEF) mbufr.o mgrads_obs.o stringflib.o datelib.o
 $(EDITSEC1): $(EDITSEC1F) mbufr.o stringflib.o
 	$(F90) -o $@ $(EDITSEC1F) mbufr.o stringflib.o
+$(SAO2BUFR) : $(SAO2BUFRF) mbufr.o stringflib.o msao.o
+	mkdir -p $(DIRBIN)
+	$(F90)  -o $@ $(SAO2BUFRF) mbufr.o stringflib.o msao.o
+msao.o   : $(MSAOF)
+	$(F90) -c $(MSAOF)
 
 #
 # shared modules 
