@@ -19,7 +19,6 @@ See the examples bellow
     cp makefile_g95 makefile.comp (for g95 compiler)
     cp makefile_ifort makefile.comp ( for Intel Fortran compiler)
     cp makefile_gfortran makefile.comp (for gfortran compiler)
-    cp makefile_cray makefile.comp (for compilation in cray environment)
 
 #### 2.1.2 Run the command "make" to compile
 
