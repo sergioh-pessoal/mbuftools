@@ -1827,3 +1827,4 @@
  042014 B2 COEFFICIENT OF THE DIRECTIONAL FOURIER SERIES                 NUMERIC                    4       -20000  15 NUMERIC                   4         6
  042015 CHECK FACTOR K                                                   NUMERIC                    2            0  12 NUMERIC                   2         4
  042016 SEA WATER POTENTIAL DENSITY REFERENCED TO SEA SURFACE            KG M-3                     5    -10000000  24 KG M-3                    5         9
+ 043001 F0ES                                                             HZ                        -5            0   8

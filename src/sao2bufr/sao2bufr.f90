@@ -13,6 +13,8 @@ program sao2bufr
  integer :: d_year,d_month,d_day,d_hour,d_minute,d_second
  integer :: i
  integer :: s ! Number of the subset
+ integer :: verbose
+
 
  sao_filename="CGK21_2024095100000.SAO"
  bufr_filename="CGK21_2024095100000.BUFR"
@@ -35,6 +37,8 @@ program sao2bufr
 !
 !  WRITE BUFR FILE
 !
+ verbose=2
+ call INIT_MBUFR(verbose,.true.)
  call open_mbufr(2,bufr_filename)
 
  !------------------
@@ -44,11 +48,11 @@ program sao2bufr
    sec1%center        =46   ! INPE- Brazilian space agence
    sec1%subcenter     =0    !
    sec1%update        =0    !
-   sec1%btype         =43   ! Space weather/ionospher data category need definition from WMO (common code table C13)
+   sec1%btype         =41   ! bUFR TYPE (BUFR CATEGORY )Conforme OSCARa category need definition from WMO (common code table C13 (SUBCATEGORY))
    sec1%Intbsubtype   =0    ! need definition from WMO
    sec1%bsubtype      =0    ! need definition from WMO
-   sec1%VerMasterTable=41   ! need definition from WMO
-   sec1%VerLocalTable =43   ! definition at INPE
+   sec1%VerMasterTable=41   ! need definition from WMO (A NOSSA CRITERIO) FUTURAMENTE O NUMERO CORRENTE DA VERSAO
+   sec1%VerLocalTable =43   ! definition at INPE (A NOSSA CRITERIO) FUTURAMENTE  = 0
    sec1%year          =     d_year
    sec1%month         =     d_month
    sec1%day           =     d_day
@@ -60,7 +64,7 @@ program sao2bufr
 !
    sec3%nsubsets = 1 ! Number of subsets
    sec3%is_cpk=0     ! if 0 = No compressed file
-   sec3%ndesc=8      ! Number of descriptors to be  included in section 3
+   sec3%ndesc=8      ! ***** IMPORTANTE ***** Number of descriptors to be  included in section 3 (se acrescentar descritores precisa atualizar o numero  aqui)
    allocate(sec3%d(sec3%ndesc),STAT=ERR)
    i=0
    i=i+1; sec3%d(i)= 301150 !WIGOS IDENTIFIER
@@ -70,14 +74,14 @@ program sao2bufr
    i=i+1; sec3%d(i)= 004004 !HOUR
    i=i+1; sec3%d(i)= 004005 !MINUTE
    i=i+1; sec3%d(i)= 004006 !SECOND
-
+   i=i+1; sec3%d(i)= 043001 !ID DA VARIAVEL  "043581 F0ES" (43581) Mudardo para 43001
    sec3%ndesc=i
 !
 ! BUFR SECTION 4 - DATA SECTION
 !
   i=0
   s=1
-  sec4%nvars=sec3%ndesc+18
+  sec4%nvars=sec3%ndesc+18  !**** IMPORTANTE *****  Se acrescentar variaveism precisa atualizar o numero  aqui!
   allocate(sec4%r(sec4%nvars,sec3%nsubsets),STAT=ERR)
   i=i+1;sec4%r(i,s)=0         ! 0-01-125-WIGOS IDENTIFIER SERIES (NUMERIC)
   i=i+1;sec4%r(i,s)=0         ! 0-01-126-WIGOS ISSUER OF IDENTIFIER (NUMERIC)
@@ -91,7 +95,7 @@ program sao2bufr
   i=i+1;sec4%r(i,s)=d_hour
   i=i+1;sec4%r(i,s)=d_minute
   i=i+1;sec4%r(i,s)=d_second
-
+  i=i+1;sec4%r(i,s)=d_F0ES*10**6    !<=== Mudar de MHZ para HZ
   call write_mbufr(2,sec1,sec3,sec4)
   call close_mbufr(2)
 

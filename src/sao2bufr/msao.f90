@@ -9,12 +9,14 @@ module msao
  public geophysical_constants
  public system_descriptors
  public time_stamp_sounder_settings
+ public d_F0ES
 
  integer,dimension(80)           ::data_file_index
  real,dimension(16)              ::geophysical_constants
  character(len=120)              ::system_descriptors
  character(len=120)              ::time_stamp_sounder_settings
  integer::current_rg
+ real :: d_F0ES
  contains
 
  !-------------------------------
