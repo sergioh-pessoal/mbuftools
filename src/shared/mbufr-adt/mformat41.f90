@@ -570,9 +570,10 @@ end subroutine format_tabqc
 !------------------------------------------------------------------------------
 ! History
 !  Ks start is 1 in single level 
-subroutine format_mtabqc(sec4,nsubsets,nrows,obs,ks,sid,nqcexc,err,wigos)
+subroutine format_mtabqc(btype,sec4,nsubsets,nrows,obs,ks,sid,nqcexc,err,wigos)
 
-!{ Variaveis da interface 
+!{ Variaveis da interface
+ integer,                        intent(in)    ::btype    !BUFR type or category
  type(sec4type),                 intent(inout) ::sec4     !.Secao 4 do  MBUFR
  integer,                           intent(in) ::nsubsets !.Numero de subsets
  integer,                        intent(inout) ::nrows    !.Numero de linhas de obs
@@ -661,8 +662,12 @@ subroutine format_mtabqc(sec4,nsubsets,nrows,obs,ks,sid,nqcexc,err,wigos)
 !--------------------------------------------------------------------------------------
 	vcoord=0	
 	slev(:)=0
+	if (nsiglev==0) then
+	   	print *,":MFORMAT:Error! Vertical levels not configurated ",btype
+	   	goto 300
+	   	err=3
+	end if
 	do l1=1,nsiglev
-	!print *,"l1,msiglev,siglev=",l1,nsiglev,siglev(l1)
 	do j=1,sec4qc%obs%nvars
 		if (sec4qc%obs%d(j,1)==siglev(l1)) slev(l1)=slev(l1)+1
 	end do
@@ -672,7 +677,7 @@ subroutine format_mtabqc(sec4,nsubsets,nrows,obs,ks,sid,nqcexc,err,wigos)
 
 	if (verbose>1)  print *,":MFORMAT:Vertical levels (descriptor, number of levels)=",vcoord,slev(1)
 	 if(slev(1)==0) then 
-		print *,":MFORMAT:Error in the indetification of vertical levels" 
+		print *,":MFORMAT:Error in the indetification of vertical levels. BUFR CATEGORY=",btype
 		err=3
 		goto 300
  	end if 
@@ -767,7 +772,7 @@ subroutine format_mtabqc(sec4,nsubsets,nrows,obs,ks,sid,nqcexc,err,wigos)
     
 		!{ Copiando niveis de supeficie para completar matriz para  demais niveis
 
-		if (levini==0) levini=1 ! Para o caso de nenhum nivel ter sido identificado 
+200  if (levini==0) levini=1 ! Para o caso de nenhum nivel ter sido identificado
 		!ks(levini)=iks
 		sid(levini)=adjustl(aux_sid)
 		do ii = levini+1,bi

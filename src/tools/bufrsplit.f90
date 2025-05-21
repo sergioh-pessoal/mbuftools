@@ -18,6 +18,7 @@ program bufrsplit
 ! SHSF 20200401 -Messages when telecomunication headers are not informed were checked
 ! SHSF 20210308 -Include the option K to do not include Tel.Header in the output files
 ! SHSF 20230512 -The option n=4 has been included
+! SHSF 20250220 -Time window contral has been reviewed
 USE mbufr
 use stringflib
 use datelib
@@ -33,7 +34,7 @@ implicit none
   character(len=40)               ::header,header2 !Telecommunications header (40 bytes)
   character(len=40),dimension(10000)::header_list
   integer                          ::nheader_list
-  integer,parameter                ::nargmax=600
+  integer,parameter                ::nargmax=300
 !}
 
 !{ AUXILIARY VARIABLES OF MAIN PROGRAM/variaveis auxiliares do progrma principal
@@ -54,7 +55,7 @@ implicit none
   real*8                          ::cdate
   real*8                          ::date_min   !It is the date menus 1 timestep 
   real*8                          ::date_max
-  real*8                          ::rdate1     ! data de referencia (procedente do header e/ou do sistema)	
+  real*8                          ::rdate1     ! Reference data (from header or system)
   real*8                          ::obs_date
 
   character(len=8)                ::header4    ! = hvalues(4)  (Dia e hora do header de telecomunicacoes) 
@@ -86,7 +87,7 @@ implicit none
   logical                         ::ext
   integer                         ::msgct1=0
    character(len=255),dimension(nargmax)  ::flist              !Lista com nome dos arquivos 
-   integer                            ::nf,xf
+   integer                            ::nf,xf,nfmax 
    character(len=255)                 ::txt
    !character(10) :: stime
    !character(5)  :: zone
@@ -109,19 +110,14 @@ implicit none
        hdate0=""
        itime_min=-1
        days_before=0
-	rdup=.false.
-	hsin_inc=6
-	rh=.false.
+       rdup=.false.
+       hsin_inc=6
+       rh=.false.
        call getarg2(argname,arg,narg)
-       	call getenv("MBUFR_TABLES",local_tables)
-	print *,narg
-	if (narg>nargmax) then 
-	  print *,":BUFRSPLIT: Error: number of arguments grater than ",nargmax
-	  stop
-	end if 
-	print *,"MBUFR_TABLES=",trim(local_tables)
-
-       print *,narg
+       call getenv("MBUFR_TABLES",local_tables)
+       print *,"MBUFR_TABLES=",trim(local_tables)
+       print *,"Number of arguments",narg
+ 
       do i=1,narg
         if (argname(i)=="o") then 
           basefile0=arg(i)
@@ -134,9 +130,7 @@ implicit none
 	  if (trim(arg(i))=="5") opsplit=5
 	elseif (argname(i)=="h") then 
 	  if (len_trim(arg(i))==8) then 
-
 	     hdate0=trim(arg(i))
-	     
 	  end if
          elseif (argname(i)=="r") then 
 		rdup=.true.
@@ -153,39 +147,41 @@ implicit none
 		
 	 elseif(argname(i)=="?") then 
 			nf=nf+1
-			if (nf > 300) then 
-				print *,trim(color_text("Warning! The maximum number of provide files is 300. Other files will be ignored", 33, .false.))
-				nf=300
+			if (i >= (nargmax-1)) then 
+			        nf=nf-1 
+				nfmax=nf
+				print *,trim(color_text("Warning! The Maximum number of the allowed input files was exceeded.", 33, .false.))
 				exit
 			else 
 				flist(nf)=arg(i)
 			end if 
 			x1=1
          end if
+
       end do
 
     !In case of hdate0 not provided, than use system date
     !{      
      if (len_trim(hdate0)==0) then 
         call date_and_time(VALUES=sdate)
-	write(hdate0,'(i4.4,2i2.2)')sdate(1),sdate(2),sdate(3)
+        write(hdate0,'(i4.4,2i2.2)')sdate(1),sdate(2),sdate(3)
      end if
     !}
     !{ set date_min and cdate_min
-	cdate_min=hdate0(1:8)
-	date_min=fjulian(cdate_min)-(real(hsin_inc)/24.0)
-	write(hdate0_min,'(i4.4,3i2.2)')year(date_min),month(date_min),day(date_min),hour(date_min)	
+     cdate_min=hdate0(1:8)
+     date_min=fjulian(cdate_min)-(real(hsin_inc)/24.0)
+     write(hdate0_min,'(i4.4,3i2.2)')year(date_min),month(date_min),day(date_min),hour(date_min)
     !}
 
-           	print *,"+-----------------------------------------------------------------+"
+        print *,"+-----------------------------------------------------------------+"
 		print *,"|                   BUFRSPLIT  (2023-10-10)                       |"
-                print *,"|        Splits the BUFR messages into different files            |"
+        print *,"|        Splits the BUFR messages into different files            |"
 		print *,"|          Include MBUFR-ADT module ",MBUFR_VERSION,"     |"
 		print *,"+-----------------------------------------------------------------+"
          if (x1*x2==0) then 
               
-                print *,"|                                                                 |"
-                print *,"| use:   bufrsplit  -o <output>  {-options}  <file_list>          |"
+        print *,"|                                                                 |"
+        print *,"| use:   bufrsplit  -o <output>  {-options}  <file_list>          |"
 		print *,"|                                                                 |"
 		print *,"| output= 'output directory name' or/and 'file output prefix'     |"
 		print *,"|                                                                 |"
@@ -193,12 +189,12 @@ implicit none
 		print *,"|                                                                 |"
 		print *,"| <-n>   = 0 only by times                                        |"
 		print *,"|        = 1 by type and times                                    |"
-                print *,"|        = 2 by center, type and time                             |"
+        print *,"|        = 2 by center, type and time                             |"
 		print *,"|        = 3 by header or by message                              |"
 		print *,"|        = 4 by PREPBUFR file (initialize with category 11 )      |"
 		print *,"|        = 5 (=1) + Filter by center in regional_center_codes.txt |"
-                print *,"|<-h> Combine date (yyyymmdd) with time in header if necessary    |"
-	        print *,"|<-r> Remove duplicated header                                    |"
+        print *,"|<-h> Combine date (yyyymmdd) with time in header if necessary    |"
+	    print *,"|<-r> Remove duplicated header                                    |"
 		print *,"|<-p> Previous Time period (Default = 1 day)                      |"
 		print *,"|<-w> time window (Default = 6 hours)                             |"
 		print *,"|<-k> Do not inclued the header in the output files               |"
@@ -206,11 +202,11 @@ implicit none
 		print *,"|<-a> allow appending data to preexisting file                    |" 
 		print *,"+-----------------------------------------------------------------+"
                 
-                stop
-           else 
-		print *," :BUFRSPLIT: Initial date set to ",hdate0_min
-                print *," :BUFRSPLIT: option= ",opsplit
-           endif
+        stop
+	else
+            print *," :BUFRSPLIT: Initial date set to ",hdate0_min
+            print *," :BUFRSPLIT: option= ",opsplit
+      endif
   !}
 
 
@@ -225,20 +221,20 @@ if (opsplit==5) call read_regional_center_codes
   PTYPE=-9
   i1=0
   nheader_list=0
-  itime_max=24/hsin_inc  
+  itime_max=24/hsin_inc+1
   itime_min=-1-(days_before*24/hsin_inc)
 
  
  do xf=1,nf
- 	infile=flist(xf)
-	write( *,'(1x," :BUFRSPLIT:Infile  (",i3,"/",i3,") ",a)') xf,nf,trim(infile)
-	write( *,'(1x," :BUFRSPLIT:Outfile (basename) ",a)') trim(basefile0)
-        Call OPEN_MBUFR(1, infile)
-! --------------------------------------------------------------------
-! READ MESSAGES FROM EACH OPENED FILE
-! (Processa a leitura de cada uma das mensagens do arquivo abertor)
-!-------------------------------------------------------------------
-!{
+    infile=flist(xf)
+    write( *,'(1x," :BUFRSPLIT:Infile  (",i3,"/",i3,") ",a)') xf,nf,trim(infile)
+    write( *,'(1x," :BUFRSPLITX:Outfile (basename) ",a)') trim(basefile0)
+    Call OPEN_MBUFR(1, infile)
+    ! --------------------------------------------------------------------
+    ! READ MESSAGES FROM EACH OPENED FILE
+    ! (Processa a leitura de cada uma das mensagens do arquivo abertor)
+    !-------------------------------------------------------------------
+    !{
 	
        !open(3,file=trim(basefile)//".lst",status="unknown")
 	header2=""
@@ -250,20 +246,25 @@ if (opsplit==5) call read_regional_center_codes
 	
 	Call READBIN_MBUFR(1,bufrmessage, bUFR_ED, sec1,err, header)
 
-!
+!------------------------------------------------------------------------
 !       In the case of category 11, it counts the number of PREPBUFR files
-!
-	if (opsplit==4) then 
-	if ((ptype/=11).and.(sec1%btype==11)) then 
-		NP=NP+1
-		rg(1,1,1)=0  
-	end if
-	end if
-	ptype=sec1%btype
+!-------------------------------------------------------------------------
+    if (opsplit==4) then
+    if ((ptype/=11).and.(sec1%btype==11)) then
+      NP=NP+1
+      rg(1,1,1)=0
+    end if
+    end if
+    ptype=sec1%btype
 !
 !     Cheking for duplicated header 
 !
-	IF (ERR>0) goto 20 
+
+	IF (ERR>0) then
+	   print *,":BUFRFSPLIT: Error reading file/message=",trim(infile),"/",nm
+	   goto 20
+	end if
+
 	if (rdup) then 
 		dup=.false.
 		if (len_trim(header)>0) then
@@ -295,23 +296,21 @@ if (opsplit==5) call read_regional_center_codes
 	
 !}
 
-	! Provisorio: assumir header anterior caso nao venha o header)
-	if (len_trim(header)>0) then
- 		header2=header
-	elseif (len_trim(header2)>0) then
-		header=header2
-	        !print *,":BUFRSPLIT:Warning! More then 1 BUFR message per header =",trim(header)
-	end if
-     	
+    ! Provisorio: assumir header anterior caso nao venha o header)
+    if (len_trim(header)>0) then
+      header2=header
+     elseif (len_trim(header2)>0) then
+       header=header2
+       print *,":BUFRSPLIT:Warning! More then 1 BUFR message per header =",trim(header)
+    end if
 
 
-       ! Processa a intercessao entre header de comunicacao e hdate0 t
-       ! Se o Header existir. Tambem obtem:rdate1 e hdate1
-       !{
-	
-	call split(header,".",hvalues,nhvalues)
-	 
-	if ((nhvalues>4).and.(nhvalues<10)) then 
+    ! Processa a intercessao entre header de comunicacao e hdate0 t
+    ! Se o Header existir. Tambem obtem:rdate1 e hdate1
+    !{
+    call split(header,".",hvalues,nhvalues)
+
+    if ((nhvalues>4).and.(nhvalues<10)) then
 		header4=hvalues(4)
 		if (header4(1:2)==hdate0(7:8)) then 
 			hdate1=hdate0(1:8)//header4(3:6)
@@ -325,53 +324,58 @@ if (opsplit==5) call read_regional_center_codes
 	else
 		hdate1=hdate0
 	end if
-	rdate1=fjulian(hdate1)
+
+     rdate1=fjulian(hdate1)
 
         !}
         
 
  20	If ((bufrmessage%nocts > 0).and.(IOERR(1)==0)) Then
-         !  
-         ! Obtendo CDATE (Data e hora sinotica da secao 1 
-         !
-	 !{  
+
+     !
+     ! Obtendo CDATE (Data e hora sinotica da secao 1
+     !
+     !{
          
-		!int(real(sec1%hour)/real(hsin_inc)+0.5)*hsin_inc
-		hsin=sec1%hour+int(real(sec1%minute)/60.0+0.5)                    ! Arredondamento para horas inteiras 
-		hsin=get_synoptic_time(hsin)                                      ! Arredondamento para hora sinotica central
-		cdate=fjulian(sec1%year,sec1%month,sec1%day,0,0,0)+real(hsin)/24.0!Acrescentando hora sinotica central em decimos de dias
-		obs_date=fjulian(sec1%year,sec1%month,sec1%day,sec1%hour,sec1%minute,0) ! Hora da observacao 
-	
-		
-		
-         !}
-         !  
-         ! Trabalhando com data do header (rdate1) 
-         ! Comparando CDATE -data da secao1 com RDATE - data do header para obter  CCDATE  a data do arquivo  
-         ! 
-	 !{  
-	 if(rdate1>0) then
- 		!IF section1 date is zero than  use header date 
-		if (cdate==0) then 
-                   ccdate=hdate1
-		   cdate=fjulian(ccdate)
-                end if 
-		
-		write(ccdate,'(i4,3i2.2)')year(cdate),month(cdate),day(cdate),hour(cdate)
+       !int(real(sec1%hour)/real(hsin_inc)+0.5)*hsin_inc
+        hsin=sec1%hour+int(real(sec1%minute)/60.0+0.5)                          ! Arredondamento para horas inteiras
+        hsin=get_synoptic_time(hsin)                                            ! Arredondamento para hora sinotica central
+        cdate=fjulian(sec1%year,sec1%month,sec1%day,0,0,0)+real(hsin)/24.0      ! Addicting synoptic central time in days
+        obs_date=fjulian(sec1%year,sec1%month,sec1%day,sec1%hour,sec1%minute,0) ! Date and time of observation Hora da observacao
+      !}
 
-	elseif (cdate>0) then 
-		!If no date in header, but there is date in section 1 than use section1 date
-		write(ccdate,'(i4,3i2.2)')year(cdate),month(cdate),day(cdate),hour(cdate)
-	else
-		!Else there are no way what the date. 
-		ccdate="0000000000"
-		cdate=0
-	end if
-       
+      !--------------------------------------------------------------------------
+      ! Tryng to get date and hour of output data in 3 differents ways (cdate)
+      ! 1) From rdate1 (reference date from system or header)
+      ! 2) Using date and time from  BUFR section1
+      ! 3) set date = 0
+      !--------------------------------------------------------------------------
+      !{
+     if(rdate1>0) then
 
-        !{ Obtendo itime 
-	itime=get_timestep(cdate)
-	
+      !==> IF section1 date is zero than use header date
+        if (cdate==0) then
+           ccdate=hdate1
+           cdate=fjulian(ccdate)
+        end if
+        write(ccdate,'(i4,3i2.2)')year(cdate),month(cdate),day(cdate),hour(cdate)
+
+     !==> If no date in header, but there is date in section 1 than use section1 date
+     elseif (cdate>0) then
+        write(ccdate,'(i4,3i2.2)')year(cdate),month(cdate),day(cdate),hour(cdate)
+
+     !==> Else there are no way to get the date.
+     else
+        ccdate="0000000000"
+        cdate=0
+     end if
+    !}---------------------------
+
+    !
+    !
+     !{ Getting time index
+     itime=get_timestep(cdate)
+
 	!Only for test
         !if (hour(cdate)==12) then
 	! write(cobs_date,'(i4,3i2.2)')year(obs_date),month(obs_date),day(obs_date),hour(obs_date)  
@@ -387,7 +391,7 @@ if (opsplit==5) call read_regional_center_codes
                 !ccdate="0000000000"
                 !itime=-24
 		goto 777
-         end if
+     end if
          !}
                          
 	  ! Obtendo nome do arquivo de saida
@@ -400,49 +404,60 @@ if (opsplit==5) call read_regional_center_codes
 	  else
 		basefile=basefile0
 	  end if 
-                      if (opsplit==0) then 
-                         write(out1,'("T",a10)')ccdate
-                         I1=1
-                         I2=1
-                         I3=itime
-			 !print *,I1,I2,I3,rg(i1,i2,i3),sec1%hour,sec1%minute
-                      elseif(opsplit==1) then 
-        		write(out1,'("B",i3.3,"_T",a10)')sec1%btype,ccdate
-                        i1=1
-			I2=sec1%btype
-                        I3=itime
-		       elseif(opsplit==5) then 
-        		i1=check_regional_center(sec1%center)
-			I2=sec1%btype
-                        I3=itime
-			write(out1,'("R",i1,"_B",i3.3,"_T",a10)')i1,sec1%btype,ccdate
-		      elseif(opsplit==2) then 
-		      	write(out1,'("C",i3.3,"B",i3.3,"_T",a10)')sec1%center,sec1%btype,ccdate
-                        I1=sec1%center
-                        I2=sec1%btype
-                        I3=itime
-		      elseif (opsplit==3)  then 
-		        write(out1,'("M",i5.5)')NM
-			I1=1
-		      	I2=1
-			I3=1
-			rg(i1,i2,i3)=0  ! Sempre reinicia o regiostro porque sera sempre um novo arquivo (sem agrupamento) 
-			j=index(header,"...")+3
-			if (j>=8) then
-				out1=trim(out1)//"_"//header(j:j+17) 
-			end if 
-			out1=trim(out1)//"_"//trim(ccdate)
-		     elseif (opsplit==4)  then 
-		        write(out1,'("_M",i5.5)')NP
-			I1=1
-		      	I2=1
-			I3=1
-			out1=trim(out1)
-                      end if
+	  !---------------------------
+	  ! Split options
+	  !---------------------------
+	  !{
+	  if (opsplit==0) then
+         write(out1,'("T",a10)')ccdate
+         I1=1
+         I2=1
+         I3=itime
+       elseif(opsplit==1) then
+          write(out1,'("B",i3.3,"_T",a10)')sec1%btype,ccdate
+          i1=1
+          i2=sec1%btype
+          i3=itime
+       elseif(opsplit==5) then
+           i1=check_regional_center(sec1%center)
+           i2=sec1%btype
+           I3=itime
+           write(out1,'("R",i1,"_B",i3.3,"_T",a10)')i1,sec1%btype,ccdate
 
-			outfile=trim(basefile)//trim(out1)//".bufr"
-			inquire(file=outfile,EXIST=ox,SIZE=fx)
-			if (fx > 0) then 
+       elseif(opsplit==2) then
+           write(out1,'("C",i3.3,"B",i3.3,"_T",a10)')sec1%center,sec1%btype,ccdate
+           I1=sec1%center
+           I2=sec1%btype
+           I3=itime
+       elseif(opsplit==3) then
+            write(out1,'("M",i5.5)')NM
+            I1=1
+            I2=1
+            I3=1
+            rg(i1,i2,i3)=0  ! Sempre reinicia o registro porque sera sempre um novo arquivo (sem agrupamento)
+            j=index(header,"...")+3
+            if (j>=8) then
+               out1=trim(out1)//"_"//header(j:j+17)
+            end if
+            out1=trim(out1)//"_"//trim(ccdate)
+
+       elseif(opsplit==4) then
+            write(out1,'("_M",i5.5)')NP
+            I1=1
+            I2=1
+            I3=1
+            out1=trim(out1)
+
+       else
+			 print *,"I don't know"
+			 stop
+
+     end if
+     !}
+
+     outfile=trim(basefile)//trim(out1)//".bufr"
+     inquire(file=outfile,EXIST=ox,SIZE=fx)
+     if (fx > 0) then
 				if (rg(i1,i2,i3)==0) then
 					if(append) then
 						txt=":BUFRSPLIT: Warning! Appending data to "//trim(outfile)
@@ -467,14 +482,8 @@ if (opsplit==5) call read_regional_center_codes
 			end if
 					
 			open(2,file=outfile,STATUS='unknown',FORM='UNFORMATTED',access='DIRECT',recl=1) 
-                       
+
                         rr=rg(I1,I2,I3)
-			
-			!if (sec1%center==43) then 
-			!if ((rr==0).or.(sec1%center==43)) then
-			!	print *," :BUFRSPLIT: -> Outfile=",trim(outfile),sec1%center !," Rg=",rr,"i1=",i1
-			!end if
-			
                         !Write telecommunication header
                         !{
                          if ((nhvalues>4).and.(.not.rh))  then
@@ -494,7 +503,7 @@ if (opsplit==5) call read_regional_center_codes
 				end if 
 			end do
                         !}
- 777			deallocate(bufrmessage%oct)
+ 777		deallocate(bufrmessage%oct)
 			close(2)
 		      
 			if (nmax>0) then
@@ -507,10 +516,14 @@ if (opsplit==5) call read_regional_center_codes
 		end if
   !}
 
- call Close_mbufr (1)
+  call Close_mbufr (1)
  end do
  close (2)
  close (3)
+ if (nf==nfmax) then 
+   print *,trim(color_text("Warning! The Maximum number of the allowed input files was exceeded.", 33, .false.))
+   print *,trim(color_text("         Some files have been skipped.", 33, .false.))
+ end if 
  print *,trim(color_text(":BUFRSPLIT: Done",32,.true.)) 
  stop
 !}
@@ -538,7 +551,7 @@ if (opsplit==5) call read_regional_center_codes
      character(len=256)::line
      integer::i,center
      
-     character(len=10),dimension(10)::cols
+     character(len=80),dimension(10)::cols
      integer::ncols
      
      infile=trim(local_tables)//"/regional_center_codes.txt"

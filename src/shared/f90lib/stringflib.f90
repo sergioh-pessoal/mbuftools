@@ -325,7 +325,7 @@ End Subroutine Sep_Num
 	end if
 		
 		if (F==maxl+1) then 
-	        print *,"Warning! Error in stringflib:split"
+	        print *,"Warning! Error in stringflib:split: Substring longer then expected. Size=",maxl
 	        exit 
 	      end if
               i=i+1

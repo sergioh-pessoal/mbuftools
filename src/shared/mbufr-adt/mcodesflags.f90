@@ -192,6 +192,8 @@ function signification_mcodesflags(descriptor,codefigure,associated_field)
  logical                             ::found 
  character(len=200)                  ::description
  character(len=6)                    ::cdescriptor
+ character(len=255)                  :: binary_number
+ integer                             ::nbits
  integer ::aux
  integer::AFSC
  write(cdescriptor,'(I6.6)')descriptor
@@ -244,9 +246,22 @@ AFSC=Associated_Field_Signficance_code
 !-----------------------------------------------------------------
 ! Check if it is the case of a descriptor associated a CODE TABLES 
 !-----------------------------------------------------------------
- description=get_name_mbufr(descriptor)
+ description=get_name_mbufr(descriptor,nbits)
  signification_mcodesflags=description
- if (index(ucases(description),"CODE")==0) goto 3737
+ if (index(ucases(description),"FLAG")>0) then
+
+
+      !call convert_dec2bin(int(codefigure))
+      if (codefigure >=0) then
+         call convert_dec2bin(int(codefigure),nbits,binary_number)
+         signification_mcodesflags=trim(signification_mcodesflags)//" :"//trim(binary_number)
+      else
+         signification_mcodesflags=description
+      end if
+      goto 3737
+
+ end if
+ if (index(ucases(description),"CODE")==0)  goto 3737
 
  found=.false.
 
@@ -283,13 +298,32 @@ AFSC=Associated_Field_Signficance_code
          ruc(nruc)%descriptor=descriptor
          ruc(nruc)%description=values(i+1)
          ruc(nruc)%code=codefigure
-        ! write (*,22),ruc(nruc)%descriptor,ruc(nruc)%code,trim(ruc(nruc)%description)
-        !22 format(2x,":MCODESFLAGS: Including [descriptor,code,description]=",i6.6,1x,i4,1x,a)
+         !write (*,22)ruc(nruc)%descriptor,ruc(nruc)%code,trim(ruc(nruc)%description)
+        !22 format(2x,":MCODESFLAGS: Including [descriptor,code,description]="i6.6,1x,i4,1x,a)
        end if
      end do
      close(20)
    end if
 3737 continue
-
 end function
+
+
+subroutine convert_dec2bin(ival,nbits,binary_number)
+ integer, intent (in):: ival
+ integer, intent (in)::nbits
+ character(len=*),intent(out)::binary_number
+ integer::j,pos,k
+ binary_number=""
+ k=ival
+
+ do j =0,nbits-1
+           pos=nbits-j
+           if (ibits(k,j,1)==1) then
+             binary_number=trim(strs(pos))//","//trim(binary_number)
+           end if
+        end do
+        j=len_trim(binary_number)-1
+        binary_number="bits on = ["//binary_number(1:j)//"]"
+ end subroutine
+
 end module

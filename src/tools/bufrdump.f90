@@ -24,6 +24,7 @@ program bufrdump
 ! 2010-05-29 SHSF - odified in (* 1) to allow printing of BUFR with error
 ! 2018-05-23 SHSF - Added filter for variable characters with code between 31 to 127
 ! 2020-09-21 SHSF - Added option to print telecommunications header 
+! 2025-01-13 SHSF - Check BUFRTABLES directory
  USE mbufr
  USE mcodesflags
  use stringflib
@@ -78,6 +79,9 @@ implicit none
  null=undef()
  ! Inicio do programa 
  !{ Pega os argumentos de Entrada: Data e Nomes dos arquivos de entrada e saida
+  call getenv("MBUFR_TABLES",path2tables)
+
+
    call getarg2(argname,arg,narg)
      err2=0
      err=0
@@ -92,7 +96,6 @@ implicit none
      selectopt=.false.
      x1=0
      x2=0
-     path2tables=""
      rmk=1
     if ((argname(1)=="?").and.(narg>=4)) then 
       infile=arg(1)
@@ -178,7 +181,6 @@ implicit none
   
  !{  initializes the mcodesflags module and loads the table-A and the table-C1
     call init_mcodesflags(path2tables)
-
  !}
 
  
@@ -281,6 +283,7 @@ implicit none
 	else
 	write(3,'(1X,I4," # NO OPTIONAL SECTION")')0
 	end if
+
         write(3,'(1X,I4," # DATA CATEGORY: ",a50)')sec1%bType,tabA(sec1%btype)
         write(3,'(1X,I4," # DATA SUBCATEGORY: ",a50)')sec1%intbsubtype,tabCC13(sec1%btype,sec1%intbsubtype)
         write(3,'(1X,I4," # LOCAL DATA SUBCATEGORY ")')sec1%bsubtype
@@ -333,7 +336,6 @@ implicit none
               
               if ((sec4%d(i,j)<1000000).and.(sec4%d(i,j)>0)) then
                    txt=ucases(signification_mcodesflags(sec4%d(i,j),sec4%r(i,j),sec4%a(i,j)) )
-		
               else
                 txt=""
               end if
@@ -345,7 +347,7 @@ implicit none
                   !{ Se for variavel corrente ou a anterior for caracter entao processa essa parte
                   
                   if (sec4%c(i,j)==numchar) then !...(Se Variavel corrente acumulla os caracteres)
-		    p_numchar=numchar	
+		    p_numchar=numchar
                     IF (p_numchar>255) p_numchar=255 
 		    if ((sec4%r(i,j)>31).and.(sec4%r(i,j)<127))then
                        auxtxt(p_numchar+1:p_numchar+1)=char(int(sec4%r(i,j)))

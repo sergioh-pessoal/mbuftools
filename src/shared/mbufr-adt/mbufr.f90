@@ -220,6 +220,7 @@ MODULE MBUFR
 ! 20230602 V4.6.9 SHSF - Consider marker operator 2-24-255 but need review. A warning in case of VerMasterTable=missing was added
 ! 20230605 V4.7.0 SHSF - The operator 2-03-yyy has been revised
 ! 20240609 V4.7.1 SHSF - readsec4cmp has been revised
+! 20250213 V4.7.2 SHSF - BUGFIX in the headerid subroutine
 !---------------------------------------------------------------------------------------------------------------- 
    IMPLICIT NONE    ! Todas as variaveis serao declaradas
    
@@ -469,7 +470,7 @@ MODULE MBUFR
 !}
 
   logical                                         ::autogen_mode
-  CHARACTER(LEN=25),PARAMETER                     ::MBUFR_VERSION=" 4.7.1 2024-06-09   "
+  CHARACTER(LEN=25),PARAMETER                     ::MBUFR_VERSION=" 4.7.2 2025-02-14   "
   logical                                         ::sec4_is_allocated
   logical                                         ::sec3_is_allocated
   logical                                         ::dsec4_is_allocated
@@ -3436,9 +3437,9 @@ END SUBROUTINE	readsec1
 function check_vertables(center,NMT,VMT,VLT); INTEGER :: check_vertables 
 !{
 !{ Variaveis da Interface
-   INTEGER,intent(in)::center
+   INTEGER,intent(inout)::center
    INTEGER,intent(in)::NMT ! Number of Master Table (for checking)
-   INTEGER,intent(in)::VMT ! Version of Master Table (for checking)
+   INTEGER,intent(inout)::VMT ! Version of Master Table (for checking)
    INTEGER,intent(in)::VLT ! Version of Local Table (For checking)
    INTEGER:: err 
 !}
@@ -3449,12 +3450,16 @@ function check_vertables(center,NMT,VMT,VLT); INTEGER :: check_vertables
    type(tabname)::aux_tab
    character(len=10)::auxc
 !}
- 
+    err=0
+   check_vertables=0
  !{ Version of master table  must be great than 0
-	if ((VMT==0).or.(VMT==255)) then 
-		check_vertables=16
-		return 
-	end if  
+    if ((VMT==0).or.(VMT==255)) then
+       if (verbose>1) print *,":MBUFR_ADT: Warning! Version of Master Table is missing. Using version: ",Cur_tab%VerMasterTab
+       VMT=Cur_tab%VerMasterTab
+       if (center==0) then
+         center=255
+      end if
+   end if
  !}
 !{ Inicializando variaveis
  
@@ -3464,8 +3469,7 @@ function check_vertables(center,NMT,VMT,VLT); INTEGER :: check_vertables
    tabin%vermastertab=VMT
    Decl_tab=tabin
    reinittab=.false.
-   err=0
-   check_vertables=0
+
 !}
 
 !{ Se tabbin = tabela corrente, entao Ok! Retorna ! 
@@ -6913,8 +6917,7 @@ subroutine headerid(un,xheader)
         
          read(un,rec= irg,iostat=IOERR(UN)) b
          if (IOERR(UN)>0) then
-	     
-	    goto 100  
+            goto 100
          end if
          if (.not.encontrou) then 
            !-------------------------------------
@@ -6926,18 +6929,17 @@ subroutine headerid(un,xheader)
             else 
               s=1
             end if
-	    if (s==4) then 
-              encontrou=.true.
-              s=1
-              xheader=""
+            if (s==4) then
+               encontrou=.true.
+               s=1
+               xheader=""
             end if
             !}
-         else
+          else
             !-------------------- 
             ! Reading the header    
             !--------------------
             !{
-           
             
             if (ichar(b)>32) then 
                xheader=trim(xheader)//b
@@ -6949,17 +6951,16 @@ subroutine headerid(un,xheader)
              ! If at the end... 
              !---------------
              !{
-	     if (b==BUFRW(s:s)) then  
-	       s=s+1
-              else 
+            if (b==BUFRW(s:s)) then
+               s=s+1
+            else
                 s=1
-              end if
-             if (s==5) then 
-      
+            end if
+            if (s==5) then
                 encontrou=.false.
                 currentRg=irg !-4
                 goto 100
-              end if
+            end if
               !}
           end if
           
@@ -6969,7 +6970,6 @@ subroutine headerid(un,xheader)
    ! print *,"bufrid=",bufrid,BUFRW(BUFRID:BUFRID),irg
     if (.not.encontrou) then 
       IF (BUFRW(BUFRID:BUFRID) == b) THEN
-     
        bufrid = bufrid + 1
        
       ELSE
@@ -6983,10 +6983,10 @@ subroutine headerid(un,xheader)
      END if
     end if
           
-        goto 10
+    goto 10
 
 100 continue
-    !print *,"currentRg=",currentRG
+    if (.not.encontrou)xheader=""
     end subroutine
 !-------------------------------------------------------------------------------
 ! write_header |                                                           | SHSF 
@@ -7201,9 +7201,10 @@ END SUBROUTINE
 ! Obtem nome de um descritor 
 !-------------------------------------------------------------------------------!
 
-function get_name_mbufr(descriptor) ; Character(len=91)::get_name_mbufr
+function get_name_mbufr(descriptor,nbits) ; Character(len=91)::get_name_mbufr
  !{
     integer,intent(in)::descriptor
+    integer,intent(out)::nbits
     character(len=6)  ::auxc
     integer           ::F,X,Y
   !}
@@ -7212,6 +7213,7 @@ function get_name_mbufr(descriptor) ; Character(len=91)::get_name_mbufr
 
   if (F==0) then 
      get_name_mbufr=tabb(f,x,y)%txt!//trim(auxc)
+     nbits=tabb(f,x,y)%nbits
   ELSEif((F==2).AND.(X==4)) then
    get_name_mbufr="Add associated field"
   ELSE 
@@ -7499,7 +7501,7 @@ SUBROUTINE find_messages_mbufr(uni,descriptor,nm ,pos,sec1,nsubsets,nbytes,heade
  !}
  !{ Inicializando variaveis
 
-  SUBNAME="MESSAGEPOS_MBUFR"
+  SUBNAME="FIND_MESSAGES_MBUFR"
   un=UNI
   errsec=0
   IOERR(UN)=0

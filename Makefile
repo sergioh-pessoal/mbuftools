@@ -16,7 +16,6 @@ DIRBIN=bin
 BUFRDUMPF     = $(DIRTOOLS)/bufrdump.f90
 BUFRTIMEF     = $(DIRTOOLS)/bufrtime.f90
 BUFRLISTF     = $(DIRTOOLS)/bufrcontent.f90
-BUFRCHECKF    = $(DIRTOOLS)/bufrcheck.f90
 BUFRGENF      = $(DIRTOOLS)/bufrgen.f90
 BUFRQCF       = $(DIRTOOLS)/bufrqc.f90
 BUFRASCIIF    = $(DIRTOOLS)/bufr2csv.f90
@@ -53,7 +52,6 @@ BUFRTIME     =  $(DIRBIN)/bufrtime
 BUFRASCII    =  $(DIRBIN)/bufr2csv
 BUFRSPLIT    =  $(DIRBIN)/bufrsplit
 BUFRSATID    =  $(DIRBIN)/bufr_satid
-BUFRCHECK    =  $(DIRBIN)/bufrcheck
 TBLDUMP      =  $(DIRBIN)/tbldump
 TBLCONV      =  $(DIRBIN)/tblconvert
 TBLCONV2     =  $(DIRBIN)/tblconvert2
@@ -67,7 +65,7 @@ EDITSEC1     =  $(DIRBIN)/editsec1
 #
 #
 #
-all:  $(BUFRDUMP) $(BUFRGEN) $(BUFRLIST)  $(BUFRQC) $(BUFRTIME) $(BUFRSPLIT)  $(TBLDUMP) $(TBLCONV) $(TBLCHECK) $(TBLOSCAR) $(EDITSEC1) $(BUFRCHECK)
+all:  $(BUFRDUMP) $(BUFRGEN) $(BUFRLIST)  $(BUFRQC) $(BUFRTIME) $(BUFRSPLIT)  $(TBLDUMP) $(TBLCONV) $(TBLCHECK) $(TBLOSCAR) $(EDITSEC1) 
 
 #
 # Basic tools 
@@ -98,8 +96,6 @@ $(BUFRGEN) : $(BUFRGENF) mbufr.o stringflib.o
 
 $(BUFRQC) : $(BUFRQCF) mformats.o mbufr.o
 	$(F90) -o $@ $(BUFRQCF) mformats.o mbufr.o
-$(BUFRCHECK) : $(BUFRCHECKF) mbufr.o stringflib.o
-	$(F90) -std=f2003 -o $@ $(BUFRCHECKF)  mbufr.o stringflib.o
 $(BUFRSPLIT) : $(BUFRSPLITF) mbufr.o stringflib.o datelib.o
 	$(F90) -o $@ $(BUFRSPLITF) mbufr.o stringflib.o datelib.o
 $(PLOTBUFRTYPE): $(PLOTBUFRTYPEF) mbufr.o mgrads_obs.o stringflib.o datelib.o 
