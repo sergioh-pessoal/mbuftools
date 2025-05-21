@@ -1,4 +1,4 @@
-#####################################################################
+###################################################################
 # This makefile can compile CPTEC-MBUFRTOOLS 
 #####################################################################
  include makefile.comp
@@ -67,7 +67,7 @@ EDITSEC1     =  $(DIRBIN)/editsec1
 #
 #
 #
-all:  $(BUFRDUMP) $(BUFRGEN) $(BUFRLIST)  $(BUFRQC) $(BUFRTIME) $(BUFRSPLIT)  $(TBLDUMP) $(TBLCONV) $(BUFRASCII) $(TBLCHECK) $(TBLOSCAR) $(EDITSEC1) $(BUFRCHECK)
+all:  $(BUFRDUMP) $(BUFRGEN) $(BUFRLIST)  $(BUFRQC) $(BUFRTIME) $(BUFRSPLIT)  $(TBLDUMP) $(TBLCONV) $(TBLCHECK) $(TBLOSCAR) $(EDITSEC1) $(BUFRCHECK)
 
 #
 # Basic tools 

@@ -13,6 +13,7 @@
 !                 Contudo precisa rever o algoripimo de separacao com virgula quando as virgulas ocorrem entre aspas
 ! 20210711 SHSF -the input format has been updated to make it compatible with the text format available on WMO GitHub  
 ! 20220604 SHSF -fix a bug reading WMO table with  13 or 14 collumns
+! 20250403 SHSF  the routine to reading bufr table B was update (bufr table version 43)
 program tblconvert
   use stringflib, only:split,split2,replace,val,isval,getarg2,ucases,rights,color_text
   implicit none
@@ -77,6 +78,7 @@ program tblconvert
       print *," INPE tblconvert: Converts format of BUFRtables          "
       print *," from WMO's text format or from OPERA csv to the text    "
       print *," format used by MBUFR "
+      print *," Version 2025-04-03"
       print *,"---------------------------------------------------------"
       print *,"use:"
       print *," tblconvert -f type -i infile -o KVV"
@@ -227,6 +229,7 @@ stop
 	end do
 	stop
       end if 
+
       
 	if (ncols==13) then 
 	
@@ -258,7 +261,7 @@ stop
 		C2=VAL(COLS(12))
 		! call writetblb(fxy,     desc,    uni,scalef,refval,nbits,          crex1,crex2,crex3)
 		call writetblb(cols(3),cols(4),cols(6),scalef,refval,nbits,UCASES(cols(10)),C1,C2)
-	else
+	elseif (ncols==14) then
 		!1=ClassNo,
 		!2=ClassName_en,
 		!3=FXY,
@@ -274,22 +277,30 @@ stop
 		!13=CREX_DataWidth_Char,
 		!14=Status
 		
-		
-		if (trim(cols(7))/="x") then
-			cols(5)=trim(cols(5))//" "//trim(cols(7))
-		end if
-		scalef=val(cols(8))
-		refval=val(cols(9))
-		nbits=val(cols(10))
+		!------------------------------
+        ! Just for verification
+        !-----------------------------
+		!print *,trim(line)
+		!do x1=1,14
+		!print *,x1,">",trim(cols(x1))
+		!end do
+		!----------------------
+		scalef=val(cols(6))
+		refval=val(cols(7))
+		nbits=val(cols(8))
 		do x1=4,8
 			cols(x1)=ucases(cols(x1))
 		end do
-		cols(7)=replace(cols(7),"CCITT IA5","CCITTIA5")
-		C1=VAL(COLS(12))
-		C2=VAL(COLS(13))
-		! call writetblb(fxy,     desc,    uni,scalef,refval,nbits,          crex1,crex2,crex3)
-		call writetblb(cols(3),cols(4),cols(7),scalef,refval,nbits,UCASES(cols(11)),C1,C2)
-		
+		cols(5)=replace(cols(5),"CCITT IA5","CCITTIA5")
+		C1=VAL(COLS(10))
+		C2=VAL(COLS(11))
+		if (C1<-999999) C1=0
+		if (C2<-999999) C2=0
+		! call writetblb(fxy,     desc,    uni,scalef,refval,nbits,  crex1,crex2,crex3)
+		call writetblb(cols(3),cols(4),cols(5),scalef,refval,nbits,UCASES(cols(9)),C1,C2)
+	else
+	  print *,"Error 7: Unexpected error"
+	  stop
 	end if
       i=i+1
       goto 10
