@@ -1533,13 +1533,13 @@
  030032 COMBINATION WITH OTHER DATA                                      FLAG TABLE                 0            0  16 FLAG TABLE                0         6
  030033 NUMBER OF BINS ALONG THE RADIAL                                  NUMERIC                    0            0  12 NUMERIC                   0         4
  030034 NUMBER OF AZIMUTHS                                               NUMERIC                    0            0  12 NUMERIC                   0         4
- 031000 SHORT DELAYED DESCRIPTOR REPLICATION FACTOR                      NUMERIC                    0            0   1 X                     *****-340282304
- 031001 DELAYED DESCRIPTOR REPLICATION FACTOR                            NUMERIC                    0            0   8 X                     *****-340282304
- 031002 EXTENDED DELAYED DESCRIPTOR REPLICATION FACTOR                   NUMERIC                    0            0  16 X                     *****-340282304
- 031011 DELAYED DESCRIPTOR AND DATA REPETITION FACTOR                    NUMERIC                    0            0   8 X                     *****-340282304
- 031012 EXTENDED DELAYED DESCRIPTOR AND DATA REPETITION FACTOR           NUMERIC                    0            0  16 X                     *****-340282304
- 031021 ASSOCIATED FIELD SIGNIFICANCE                                    CODE TABLE                 0            0   6 X                     *****-340282304
- 031031 DATA PRESENT INDICATOR                                           FLAG TABLE                 0            0   1 X                     *****-340282304
+ 031000 SHORT DELAYED DESCRIPTOR REPLICATION FACTOR                      NUMERIC                    0            0   1                       *****-340282304
+ 031001 DELAYED DESCRIPTOR REPLICATION FACTOR                            NUMERIC                    0            0   8                       *****-340282304
+ 031002 EXTENDED DELAYED DESCRIPTOR REPLICATION FACTOR                   NUMERIC                    0            0  16                       *****-340282304
+ 031011 DELAYED DESCRIPTOR AND DATA REPETITION FACTOR                    NUMERIC                    0            0   8                       *****-340282304
+ 031012 EXTENDED DELAYED DESCRIPTOR AND DATA REPETITION FACTOR           NUMERIC                    0            0  16                       *****-340282304
+ 031021 ASSOCIATED FIELD SIGNIFICANCE                                    CODE TABLE                 0            0   6                       *****-340282304
+ 031031 DATA PRESENT INDICATOR                                           FLAG TABLE                 0            0   1                       *****-340282304
  033002 QUALITY INFORMATION                                              CODE TABLE                 0            0   2 CODE TABLE                0         1
  033003 QUALITY INFORMATION                                              CODE TABLE                 0            0   3 CODE TABLE                0         1
  033005 QUALITY INFORMATION (AWS DATA)                                   FLAG TABLE                 0            0  30 FLAG TABLE                0        10
@@ -1693,7 +1693,7 @@
  040071 RETRIEVAL ERROR COVARIANCE MATRIX FOR OZONE IN PRINCIPAL COMPONE NUMERIC                    4     -1000000  21 NUMERIC                   4         7
  040072 PWLR ESTIMATED RETRIEVAL QUALITY INDICATOR OF ATMOSPHERIC OZONE  NUMERIC                    1            0   8 NUMERIC                   1         3
  040073 PWLR ESTIMATED RETRIEVAL ERROR OF SURFACE SKIN TEMPERATURE       K                          1            0   8 K                         1         3
- 040074 GENERAL INTERFEROMETRY QUALITY FLAGS                             FLAG TABLE                 0            0  16 X                     *****-340282304
+ 040074 GENERAL INTERFEROMETRY QUALITY FLAGS                             FLAG TABLE                 0            0  16                       *****-340282304
  041001 PCO2                                                             PA                         3            0  18 PA                        3         6
  041002 FLUORESCENCE                                                     KG L-1                    12            0  16 KG L-1                   12         5
  041003 DISSOLVED NITRATES                                               UMOL KG-1                  3            0  17 UMOL KG-1                 3         5
