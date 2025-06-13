@@ -6,6 +6,7 @@ program sao2bufr
 
  character(len=1024):: sao_filename
  character(len=1024):: bufr_filename
+ character(len=16):: wigos_local_id
  type(sec1type)::sec1
  type(sec3type)::sec3
  type(sec4type)::sec4
@@ -84,10 +85,11 @@ program sao2bufr
   sec4%nvars=sec3%ndesc+18  !**** IMPORTANTE *****  Se acrescentar variaveism precisa atualizar o numero  aqui!
   allocate(sec4%r(sec4%nvars,sec3%nsubsets),STAT=ERR)
   i=i+1;sec4%r(i,s)=0         ! 0-01-125-WIGOS IDENTIFIER SERIES (NUMERIC)
-  i=i+1;sec4%r(i,s)=0         ! 0-01-126-WIGOS ISSUER OF IDENTIFIER (NUMERIC)
+  i=i+1;sec4%r(i,s)=2000         ! 0-01-126-WIGOS ISSUER OF IDENTIFIER (NUMERIC)
   i=i+1;sec4%r(i,s)=0         ! 0-01-127-WIGOS ISSUE NUMBER (NUMERIC)
-  do k=1,16                   ! 0-01-128-WIGOS LOCAL IDENTIFIER (CHARACTER) (CCITTIA5)
-    i=i+1;sec4%r(i,s)=ichar(" ")
+  wigos_local_id="83780"      ! 0-01-128-WIGOS LOCAL IDENTIFIER (CHARACTER) (CCITTIA5)
+  do k=1,16
+    i=i+1;sec4%r(i,s)=ichar(wigos_local_id(k:k))
   end do
   i=i+1;sec4%r(i,s)=d_year
   i=i+1;sec4%r(i,s)=d_month
