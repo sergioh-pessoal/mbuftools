@@ -206,11 +206,12 @@ print *,":TBLDUMP: The follow tables will be updated"
 sec1%center=icode
 sec1%vermastertable=iver
 sec1%verlocaltable=ilocal
+if (sec1%center<0) sec1%center=255
 
 write(*,'(1x,":TBLDUMP:Center=",i3," Master table=",i3," Local table=",i3)')sec1%center,sec1%vermastertable,sec1%verlocaltable
 print *,"--------------------------------------------"
-!print *,"Deseja prosseguir com a concatenacao ? [S/N]"
-!read(*,*)SN
+print *,"Deseja prosseguir com a concatenacao ? [S/N]"
+read(*,*)SN
 
 !if (UCASES(SN)=="S")  then 
   call merge_tabb2(btable, sec1%center,sec1%vermastertable,sec1%verlocaltable)

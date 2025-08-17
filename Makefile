@@ -20,17 +20,20 @@ BUFRGENF      = $(DIRTOOLS)/bufrgen.f90
 BUFRQCF       = $(DIRTOOLS)/bufrqc.f90
 BUFRASCIIF    = $(DIRTOOLS)/bufr2csv.f90
 BUFRSPLITF    = $(DIRTOOLS)/bufrsplit.f90
+LISTASUBF     = $(DIRTOOLS)/listasubsets.f90
+PLOTBUFRTYPEF = $(DIRTOOLS)/plotbufrtype.f90
+EDITSEC1F     = $(DIRTOOLS)/editsec1.f90
+
 TBLDUMPF      = $(DIRACESS)/tbldump.f90
 TBLCONVF      = $(DIRACESS)/tblconvert.f90
-#TBLCONVF2     = $(DIRACESS)/tblconvert2.f90
+TBLCHKVERF    = $(DIRACESS)/tblcheckversions.f90
 TBLCHECKF     = $(DIRACESS)/tblcheckformat.f90
 MWRITETXTF    = $(DIRACESS)/mwritetxt.f90
 TBLCONVF      = $(DIRACESS)/tblconvert.f90
 CHKBUFRF      = $(DIRACESS)/checkbufr.f90
 TBLOSCARF     = $(DIRACESS)/tbloscar.f90
-LISTASUBF     = $(DIRTOOLS)/listasubsets.f90
-PLOTBUFRTYPEF = $(DIRTOOLS)/plotbufrtype.f90
-EDITSEC1F     = $(DIRTOOLS)/editsec1.f90
+
+
 
 STRINGFLIBF   = $(DIRSHARED)/f90lib/stringflib.f90
 DATELIBF      = $(DIRSHARED)/f90lib/datelib.f90
@@ -53,6 +56,7 @@ BUFRASCII    =  $(DIRBIN)/bufr2csv
 BUFRSPLIT    =  $(DIRBIN)/bufrsplit
 BUFRSATID    =  $(DIRBIN)/bufr_satid
 TBLDUMP      =  $(DIRBIN)/tbldump
+TBLCHKVER    =  $(DIRBIN)/tblcheckversions
 TBLCONV      =  $(DIRBIN)/tblconvert
 TBLCONV2     =  $(DIRBIN)/tblconvert2
 TBLCHECK     =  $(DIRBIN)/tblcheckformat
@@ -62,15 +66,17 @@ EDITSEC1     =  $(DIRBIN)/editsec1
 
 
 
+
 #
 #
 #
-all:  $(BUFRDUMP) $(BUFRGEN) $(BUFRLIST)  $(BUFRQC) $(BUFRTIME) $(BUFRSPLIT)  $(TBLDUMP) $(TBLCONV) $(TBLCHECK) $(TBLOSCAR) $(EDITSEC1) 
+all:  $(BUFRDUMP) $(BUFRGEN) $(BUFRLIST) $(BUFRQC) $(BUFRTIME) $(BUFRSPLIT) $(TBLDUMP) $(TBLCONV) $(TBLCHECK) $(TBLOSCAR) $(EDITSEC1) $(TBLCHKVER)
 
 #
 # Basic tools 
 #
 $(BUFRDUMP) : $(BUFRDUMPF) mbufr.o stringflib.o mcodesflags.o
+	mkdir -p ./bin
 	$(F90)  -o $@ $(BUFRDUMPF) mbufr.o stringflib.o mcodesflags.o
 $(LISTASUB) : $(LISTASUBF) mbufr.o stringflib.o datelib.o
 	$(F90) -o $@ $(LISTASUBF) mbufr.o stringflib.o datelib.o
@@ -80,8 +86,8 @@ mwritetxt.o  : $(MWRITETXTF)
 	$(F90) -c $(MWRITETXTF)
 $(TBLCONV) : $(TBLCONVF) stringflib.o
 	$(F90) -o $@ $(TBLCONVF) stringflib.o
-#$(TBLCONV2) : $(TBLCONVF2) stringflib.o
-#	$(F90) -o $@ $(TBLCONVF2) stringflib.o
+$(TBLCHKVER) : $(TBLCHKVERF)
+	$(F90) -o $@ $(TBLCHKVERF)
 $(TBLCHECK) : $(TBLCHECKF) 
 	$(F90) -o $@ $(TBLCHECKF) 
 $(TBLOSCAR) : $(TBLOSCARF) stringflib.o 
