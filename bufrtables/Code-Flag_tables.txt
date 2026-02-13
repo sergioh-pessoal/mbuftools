@@ -1055,6 +1055,51 @@ CodFig,"Type of data buoy"
    21,"Observed minus interpolated value",               
    22,"Observed minus hydrostatically calculated value", 
 ::
+:008028:
+!CodFig,Time significance
+ 0,"Reserved"
+ 1,"Time series"
+ 2,"Time averaged (see Note 1)"
+ 3,"Accumulated"
+ 4,"Forecast"
+ 5,"Forecast time series"
+ 6,"Forecast time averaged"
+ 7,"Forecast accumulated"
+ 8,"Ensemble mean (see Note 2)"
+ 9,"Ensemble mean time series"
+ 10,"Ensemble mean time averaged"
+ 11,"Ensemble mean accumulated"
+ 12,"Ensemble mean forecast"
+ 13,"Ensemble mean forecast time series"
+ 14,"Ensemble mean forecast time averaged"
+ 15,"Ensemble mean forecast accumulated"
+ 16,"Analysis17Start of phenomenon"
+ 18,"Radiosonde launch time"
+ 19,"Start of orbit"
+ 20,"End of orbit"
+ 21,"Time of ascending node"
+ 22,"Time of occurrence of wind shift"
+ 23,"Monitoring period"
+ 24,"Agreed time limit for report reception"
+ 25,"Nominal reporting time"
+ 26,"Time of last known position"
+ 27,"First guess"
+ 28,"Start of scan"
+ 29,"End of scan or time of ending"
+ 30,"Time of occurrence"
+ 31,"Reserved"
+ 32,"Reserved"
+ 33,"Reserved"
+ 34,"Reserved"
+ 35,"Reserved"
+ 36,"Reserved"
+ 37,"Reserved"
+ 38,"Reserved"
+ 39,"Reserved"
+ 40,"Attribution Day In Local Meteorological Time Zone (LMTZ)
+ 41,"Period over which the daily measurement is made (LMTZ)"
+ 42,"Time at which the daily and instantaneous measurement is made (LMTZ)"
+::
 :008094:
  CodeFigure,"Method used"
  0,"Average of maximum and minimum values: Tm = ( Tx + Tn) / 2"
@@ -1073,6 +1118,7 @@ CodFig,"Type of data buoy"
 13,"Reserved"
 14,"Reserved"
 15,"Missing value"
+::
 :013038:
 !CodFig, "Superadiabatic indicator"
       0, "Not superadiabatic"
@@ -1189,7 +1235,18 @@ CodFig,"Type of data buoy"
 !   1 = slightly suspect
 !   2 = highly suspect
 !   3 = bad
-!3-5, Reserved
+!3-4, Reserved
+5, "8-bit indicator of quality (DAYCLY)"
+!   0 = Data checked and declared good;
+!   1 = Data checked and declared suspect;
+!   2 = Data checked and declared aggregated;
+!   3 = Data checked and declared out of instrument range;
+!   4 = Data checked, declared aggregated, and out of instrument range;
+!   5 = Parameter is not measured at the station;
+!   6 = Daily value not provided;
+!   7 = Data unchecked,
+!   8-254 = Reserved;
+!   255 = Missing (QC info not available)
 6, "4-bit indicator of quality control class according to GTSPP"
 !   0 = Unqualified
 !   1 = Correct value (all checks passed)
