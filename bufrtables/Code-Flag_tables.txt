@@ -1090,7 +1090,7 @@ CodFig,"Type of data buoy"
    22,"Observed minus hydrostatically calculated value", 
 ::
 :008028:
-!CodFig,Time significance
+ CodFig,"Time significance"
  0,"Reserved"
  1,"Time series"
  2,"Time averaged (see Note 1)"
