@@ -1,10 +1,9 @@
 program bufrcontent
 
 !******************************************************************************
-!*                                  BUFRLIST                                  * 
+!*                                  BUFRCONTENT                               * 
 !*                                                                            *
-!*   Programa para verificar conteudo do arquivos BUFR                        *.
-!*        (Program to verify the contents of BUFR files )                     *
+!*                  program for verifying BUFR file content                   *
 !*                                                                            *
 !*                                                                            *
 !*             Copyright (C) 2013 Sergio Henrique S. Ferreira                 *
@@ -15,7 +14,7 @@ program bufrcontent
 !*----------------------------------------------------------------------------* 
 !* This program scans only BUFR sections 1 and 3 to get informatin such as 
 !* data category, number of subset (observarions), etc. 
-!* The section 4 is not read to increase reading speed.
+!* The section 4 is not read .
 !******************************************************************************
 ! HYSTORY:
 !   2013-06-26 - SHSF - INITIAL VERSION BASED ON BUFRLIST (old program)
@@ -47,7 +46,7 @@ implicit none
   integer,dimension(0:255,0:255,0:255)::TOTAL_CENTROXTIPO !Totalizados de subsets por centro, tipo e subtipo (i,j,k)
   integer,dimension(0:255,0:255,0:255)::TMSG_CENTROXTIPO  !Totalizados de mensagens por centro, tipo e subtipo (i,j,k) 
   integer,dimension(0:255)            ::total_centro	  !Totalizador de bytes por centro (i)
-
+  integer,dimension(0:255)            ::totalm_centro	  !Totalizador de mensagens por centro (i)
   character(len=255)                  ::outfile           !Nome do arquivo de saida (opcional)
   character(len=255)                  ::infile            !Variavel auxiliar para arquivos de entrada
   character(len=255),dimension(301)   ::flist             !Lista com nome dos arquivos 
@@ -126,6 +125,7 @@ implicit none
 	total_centroxtipo(:,:,:)=0
 	tmsg_centroxtipo(:,:,:)=0
 	total_centro(:)=0
+	totalm_CENTRO(:)=0
      
 	call getenv("MBUFR_TABLES",table_dir)
 	if ((table_dir(i:i)/="\").and.(table_dir(i:i)/="/")) then 
@@ -177,13 +177,13 @@ end if
       write(un,*)"+----------------------------------------------------------------------------------------------+"
       
       endif
-      
+      print *,"nmessage=",nmessage
       do m=1,nmessage
 	if (sec1(m)%center>255) sec1(m)%center=255
-	if (oph) write(un,77)m,pos(m),header(m),sec1(m)%center,sec1(m)%subcenter,sec1(m)%btype,sec1(m)%bsubtype,nsubsets(m),mbytes(m)
+	if (oph) write(un,77)m,pos(m),header(m),sec1(m)%center,sec1(m)%subcenter,sec1(m)%btype,sec1(m)%intbsubtype,nsubsets(m),mbytes(m)
       76 format (1x,"|",a4,  "|"a10,    "|",a40,"|",a7,"|",a9,       "|",a7,"|",a10,"|")
       77 format (1x,"|",i4.4,"|",i10.10,"|",a40,"|",i5,"/",i5,"|",i4,"/",i4,"|",i7,"|",i10,"|")
- 
+        
           if ((sec1(m)%btype>255)) then
             print *, "Error: Bufr Category unknown !"
             print *, "Center=",sec1(m)%center
@@ -191,14 +191,15 @@ end if
           else 
             i=sec1(m)%center
             if (i<0) then 
-               print *,i
+               print *,"Error! center sec1=",i
                stop
             end if
             j=sec1(m)%btype
-            k=sec1(m)%bsubtype
+            k=sec1(m)%intbsubtype
             TOTAL_CENTROXTIPO(i,j,k)=TOTAL_CENTROXTIPO(i,j,k)+nsubsets(m)
 	    if (nsubsets(m)>0) TMSG_CENTROXTIPO(i,j,k)=TMSG_CENTROXTIPO(i,j,k)+1	
             total_centro(i)=total_centro(i)+nsubsets(m)
+            totalm_centro(i)=totalm_centro(i)+1
             NBYTES = NBYTES + MBYTES(m)
             NBYTESF = NBYTESF + MBYTES(m)
           end if
@@ -216,13 +217,11 @@ write(un,*) "+------------------------------------------------------------------
 write(un,*) "+----------------------------------------------------------------------------------------------+"
    total=0.0
    DO i = 0,255
- 
-	If (total_centro(i) > 0) Then
+	If (totalm_centro(i) > 0) Then
 		Write (un, 98) i,TABCC1(i)  
 		totcentros=totcentros+1
 		do  J = 0,255
 			do k=0,255
-					
 				If (TOTAL_CENTROXTIPO(i, J,k) > 0) Then
 					!tabcc13(j,k)=""
 					if (len_trim(tabcc13(j,k))==0) then

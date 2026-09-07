@@ -59,7 +59,7 @@
   ! rindex   |Find index of last occurrence of a substring in a string
 
   Real:: Null=-340282300       !valor nulo ou indefinido
- private null
+  private null
   
 
 !******************************************************************************
@@ -934,9 +934,9 @@ end function
 !  (Veja declaracao da variavel NULL)                                         |
 !                                                                             |
 !******************************************************************************
-!HISTORICO
-!  20110904 : Acrescentado eliminacao do caracter @ quando junto ao numero ou
-!            de eliminacao de caracteres abaixo de ASC 32
+! History
+!  20110904 : Added: removal of the @ character next to the number and removal of ASCII codes < 32
+!  20260107 : compatibility with "," as a decimal separator.
  function VAL(AS);real VAL
 
  !{ Variaveis da interface
@@ -962,6 +962,7 @@ end function
       cS=aaS(i:i)
       if (CS==",") cs="."
       if ((ichar(CS)>=32).and.(CS /="@")) then
+      if (CS==",") CS="."
       if ((CS==".").and.(rep==1)) CS=" "
       if (CS==".") rep=1
       if (index("0123456789",cS)>0) chknum=1
@@ -1408,9 +1409,9 @@ function replace(line,a,b);character(len=1024)::replace
 	  llmax=len_trim(linha)
 	  c=linha(l:l+almax)
 	
-	  if(trim(c)==trim(a)) then 
+	  if(trim(c)==trim(a)) then
 	      if (l==1) then 
-		linha=trim(b)//linha(l+almax+1:llmax)
+		    linha=trim(b)//linha(l+almax+1:llmax)
 	      else
 		linha=linha(1:l-1)//trim(b)//linha(l+almax+1:llmax)
 	      end if
@@ -1420,11 +1421,32 @@ function replace(line,a,b);character(len=1024)::replace
 	replace=linha
 
 end function
+
+function remove_char(line,a); character(len=1024)::remove_char
+	character(len=*),intent(in)::line
+	character(len=1),intent(in)::a
+    character(len=1024)::linha
+    integer::l,j,llmax
+	linha=line
+	llmax=len_trim(line)
+	linha=""
+	l=0
+	j=0
+	do while(l<llmax)
+	 l=l+1
+	 if (line(l:l)/=a) then
+	   j=j+1
+	   linha(j:j)=line(l:l)
+	 end if
+	end do
+	remove_char=trim(linha)
+
+end function
 !---------------------------------------------------------------------------
 !prox  | Verifica se dois numeros reais sao muito proximos | SHSF 
 !----------------------------------------------------------------------
 !  Se rval1 ~ rval2  prox = .true.
-!  se rval1 /= rval2 prox = .false. 
+!  se rval1 /= rval2 prox = .false. ,
 
 function near(rval1,rval2);logical::near
   real,intent(in)::rval1

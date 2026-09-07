@@ -1,9 +1,9 @@
-program bufrsplit
+program mbufr_split
 !>------------------------------------------------------------------------------|
-!!BUFRSPLIT |SEPARA AS MENSAGENS BUFR DE UM ARQUIVO EM MULTIPLOS ARQUIVOS | SHSF|
+!!MBUFR-SPLIT SEPARA AS MENSAGENS BUFR DE UM ARQUIVO EM MULTIPLOS ARQUIVOS| SHSF|
 !!------------------------------------------------------------------------------|
 !!                                                                              |
-!! THIS PROGRAM SPLIT  BUFR MESSAGE FROM A FILE AND SAVE IT IN MANY DIFERENT    |
+!! THIS PROGRAM SPLIT BUFR MESSAGE FROM A FILE AND SAVE IT IN MANY DIFERENT     |
 !! FILES                                                                        |
 !!                                                                              |
 !<------------------------------------------------------------------------------|
@@ -17,8 +17,10 @@ program bufrsplit
 ! SHSF 20190322 - Duplicate header removal was included
 ! SHSF 20200401 -Messages when telecomunication headers are not informed were checked
 ! SHSF 20210308 -Include the option K to do not include Tel.Header in the output files
-! SHSF 20230512 -The option n=4 has been included
-! SHSF 20250220 -Time window contral has been reviewed
+! SHSF 20230512 -The option n=4 was included
+! SHSF 20250220 -Time window central was reviewed
+! SHSF 20250815 -The option 6 was included
+! SHSF 20260904 - Revision of time windown selection and identification of time step
 USE mbufr
 use stringflib
 use datelib
@@ -27,30 +29,30 @@ use datelib
 implicit none
 
 !{ DECLARATION OF VARIABLES USED BY READ_MBUFR/Declaracao das variaveis utilizadas em read_mbufr
-  type(octtype)                   ::bufrmessage
-  type(sec1type)                  ::sec1
-  integer                         ::BUFR_ED
-  integer                         ::err
-  character(len=40)               ::header,header2 !Telecommunications header (40 bytes)
+  type(octtype)                    ::bufrmessage
+  type(sec1type)                   ::sec1
+  integer                          ::BUFR_ED
+  integer                          ::err
+  character(len=40)                ::header,header2 !Telecommunications header (40 bytes)
   character(len=40),dimension(10000)::header_list
   integer                          ::nheader_list
-  integer,parameter                ::nargmax=300
+  integer,parameter                ::nargmax=10000
 !}
 
 !{ AUXILIARY VARIABLES OF MAIN PROGRAM/variaveis auxiliares do progrma principal
   integer,dimension(0:1000,0:1000,-100:10) ::rg    ! Rg position (centers,Bufr Types, timesteps)
-  integer,dimension(0:999)                   ::lcenter          !List of generating centres
-  integer                                    ::ncenter          !Number of elements in lcenter
-  integer,dimension(0:999)                   ::rcenter          !Region identification of a center in lcenter
-  character(len=2)                           ::Region_Id
-  character(len=1),dimension(nargmax)  ::argname
-  character(len=255),dimension(nargmax)::arg
+  integer,dimension(0:999)                 ::lcenter          !List of generating centres
+  integer                                  ::ncenter          !Number of elements in lcenter
+  integer,dimension(0:999)                 ::rcenter          !Region identification of a center in lcenter
+  character(len=2)                         ::Region_Id
+  character(len=1),dimension(nargmax)      ::argname
+  character(len=255),dimension(nargmax)    ::arg
   integer                         :: narg
   integer                         :: i,rr,X1,X2,I1,I2,I3,j,l            
   integer                         :: NM ! Number of message
   integer                         :: NP ! Number of prepbufr file 
   integer                         :: PTYPE ! Previous BUFR type
-  character(len=255)              :: infile,outfile,basefile,out1,basefile0
+  character(len=255)              :: infile,outfile,basefile,out1,basefile0,filelist
 
   real*8                          ::cdate
   real*8                          ::date_min   !It is the date menus 1 timestep 
@@ -61,6 +63,7 @@ implicit none
   character(len=8)                ::header4    ! = hvalues(4)  (Dia e hora do header de telecomunicacoes) 
   character(len=10)               ::hdate0     ! Data fornecida ou do sistema para verificar o header
   character(len=10)               ::hdate0_min ! hdate0-1dia 
+  character(len=10)               ::hdate0_max ! hdate0-1dia
   character(len=10)               ::hdate1     ! <hdate0> Interception <header4>
   character(len=8),dimension(10)  ::hvalues    !Vector with header telecommunications values 
   integer                         ::nhvalues   !Number of elements in header
@@ -87,6 +90,7 @@ implicit none
   logical                         ::ext
   integer                         ::msgct1=0
    character(len=255),dimension(nargmax)  ::flist              !Lista com nome dos arquivos 
+   character(len=1024)                ::aline
    integer                            ::nf,xf,nfmax 
    character(len=255)                 ::txt
    !character(10) :: stime
@@ -100,6 +104,7 @@ implicit none
 
  ! PROGRAM START/Inicio do programa
  !{ CAT THE INPUT ARGUMENTS: DATE, INPUT FILE NAME AND OUTPUT FILE NAME/ Pega os argumentos de Entrada: Data e Nomes dos arquivos de entrada e saida
+       filelist=""
        X1=0; X2=0
        msgct1=0
        append=.false.
@@ -109,7 +114,7 @@ implicit none
        opsplit=0 
        hdate0=""
        itime_min=-1
-       days_before=0
+       days_before=1
        rdup=.false.
        hsin_inc=6
        rh=.false.
@@ -117,48 +122,68 @@ implicit none
        call getenv("MBUFR_TABLES",local_tables)
        print *,"MBUFR_TABLES=",trim(local_tables)
        print *,"Number of arguments",narg
- 
-      do i=1,narg
-        if (argname(i)=="o") then 
+
+
+      do i=1,narg !{
+        if (argname(i)=="o") then  !{
           basefile0=arg(i)
           x2=1
         elseif (argname(i)=="n") then 
           if (trim(arg(i))=="1") opsplit=1  
-	  if (trim(arg(i))=="2") opsplit=2
-	  if (trim(arg(i))=="3") opsplit=3
+          if (trim(arg(i))=="2") opsplit=2
+          if (trim(arg(i))=="3") opsplit=3
           if (trim(arg(i))=="4") opsplit=4
-	  if (trim(arg(i))=="5") opsplit=5
-	elseif (argname(i)=="h") then 
-	  if (len_trim(arg(i))==8) then 
-	     hdate0=trim(arg(i))
-	  end if
-         elseif (argname(i)=="r") then 
-		rdup=.true.
-	 elseif (argname(i)=="w") then 
-		hsin_inc=val(arg(i))
-	elseif (argname(i)=="k") then 
-		rh=.true.
-	elseif (argname(i)=="x") then
-		nmax=val(arg(i))
-	elseif (argname(i)=="a") then
-		append=.true.
-	elseif (argname(i)=="p") then
-		days_before=val(arg(i))
-		
-	 elseif(argname(i)=="?") then 
-			nf=nf+1
-			if (i >= (nargmax-1)) then 
-			        nf=nf-1 
-				nfmax=nf
-				print *,trim(color_text("Warning! The Maximum number of the allowed input files was exceeded.", 33, .false.))
-				exit
-			else 
-				flist(nf)=arg(i)
-			end if 
-			x1=1
-         end if
+          if (trim(arg(i))=="5") opsplit=5
+          if (trim(arg(i))=="6") opsplit=6
+       elseif (argname(i)=="h") then
+          if (len_trim(arg(i))==8) then
+             hdate0=trim(arg(i))
+          end if
+       elseif (argname(i)=="r") then
+          rdup=.true.
+       elseif (argname(i)=="w") then
+          hsin_inc=val(arg(i))
+      elseif (argname(i)=="k") then
+          rh=.true.
+      elseif (argname(i)=="x") then
+          nmax=val(arg(i))
+      elseif (argname(i)=="a") then
+         append=.true.
+      elseif (argname(i)=="p") then
+         days_before=val(arg(i))
+     elseif (argname(i)=="l") then
+        filelist=arg(i)
+        open(33,file=filelist,status="old")
 
-      end do
+22      read(33,'(a)',end=333) aline
+	    nf=nf+1
+	    if (i >= (nargmax-1)) then
+			nf=nf-1
+			nfmax=nf
+			print *,trim(color_text("Warning! The Maximum number of the allowed input files was exceeded.", 33, .false.))
+			close(33)
+			exit
+		else
+			flist(nf)=aline
+			nfmax=nf
+		end if
+	    goto 22
+333     close(33)
+        x1=1
+	 elseif((argname(i)=="?").and.(len_trim(filelist)==0)) then
+        nf=nf+1
+        if (i >= (nargmax-1)) then
+            nf=nf-1
+            nfmax=nf
+            print *,trim(color_text("Warning! The Maximum number of the allowed input files was exceeded.", 33, .false.))
+            exit
+        else
+            flist(nf)=arg(i)
+            nfmax=nf
+        end if
+        x1=1
+     end if !}
+    end do !}
 
     !In case of hdate0 not provided, than use system date
     !{      
@@ -169,20 +194,23 @@ implicit none
     !}
     !{ set date_min and cdate_min
      cdate_min=hdate0(1:8)
-     date_min=fjulian(cdate_min)-(real(hsin_inc)/24.0)
+     date_min=fjulian(cdate_min)-(real(hsin_inc/2)/24.0)-days_before
+     date_max=fjulian(cdate_min)+1 !-(real(hsin_inc)/24.0)
+
      write(hdate0_min,'(i4.4,3i2.2)')year(date_min),month(date_min),day(date_min),hour(date_min)
+     write(hdate0_max,'(i4.4,3i2.2)')year(date_max),month(date_max),day(date_max),hour(date_max)
     !}
 
         print *,"+-----------------------------------------------------------------+"
-		print *,"|                   BUFRSPLIT  (2023-10-10)                       |"
+		print *,"|                   MBUFR-SPLIT  (2025-08-15)                     |"
         print *,"|        Splits the BUFR messages into different files            |"
 		print *,"|          Include MBUFR-ADT module ",MBUFR_VERSION,"     |"
 		print *,"+-----------------------------------------------------------------+"
          if (x1*x2==0) then 
               
         print *,"|                                                                 |"
-        print *,"| use:   bufrsplit  -o <output>  {-options}  <file_list>          |"
-		print *,"|                                                                 |"
+        print *,"| use:   bufrsplit  -o <output> <options> <input options>         |"
+      	print *,"|                                                                 |"
 		print *,"| output= 'output directory name' or/and 'file output prefix'     |"
 		print *,"|                                                                 |"
 		print *,"| options:                                                        |"
@@ -193,18 +221,25 @@ implicit none
 		print *,"|        = 3 by header or by message                              |"
 		print *,"|        = 4 by PREPBUFR file (initialize with category 11 )      |"
 		print *,"|        = 5 (=1) + Filter by center in regional_center_codes.txt |"
+		print *,"|        = 6 by Version of Local Tables and times                 |"
         print *,"|<-h> Combine date (yyyymmdd) with time in header if necessary    |"
 	    print *,"|<-r> Remove duplicated header                                    |"
-		print *,"|<-p> Previous Time period (Default = 1 day)                      |"
+		print *,"|<-p> Tolerance for delayed data (Default = 1 day)                |"
 		print *,"|<-w> time window (Default = 6 hours)                             |"
 		print *,"|<-k> Do not inclued the header in the output files               |"
 		print *,"|<-x> $ maximum number of message to be processed                 |"
 		print *,"|<-a> allow appending data to preexisting file                    |" 
+		print *,"|                                                                 |"
+		print *,"| Input options:                                                  |"
+		print *,"| + use 'one or more input files directly. ex.: ./*.bufr'         |"
+		print *,"| + or type -l <list.txt>  = List file with input file names      |"
 		print *,"+-----------------------------------------------------------------+"
                 
         stop
 	else
-            print *," :BUFRSPLIT: Initial date set to ",hdate0_min
+            print *," :BUFRSPLIT: DATE = ",trim(hdate0)
+            print *," :BUFRSPLIT: TIME WINDOWNS SET FROM ",trim(hdate0_min)," to ",trim(hdate0_max)
+            print *," :BUFRSPLIT: TIME INCREMENT = ", hsin_inc
             print *," :BUFRSPLIT: option= ",opsplit
       endif
   !}
@@ -221,13 +256,20 @@ if (opsplit==5) call read_regional_center_codes
   PTYPE=-9
   i1=0
   nheader_list=0
-  itime_max=24/hsin_inc+1
-  itime_min=-1-(days_before*24/hsin_inc)
+  itime_max=get_timestep(date_max)
+  itime_min=get_timestep(date_min)
 
- 
+   ! Just for test
+   ! write (*,'(1X," :MBUFRSPLIT: Time step from ",i3.2," to ",I3.2,". Time Increment=",I2.2)')itime_min,itime_max,hsin_inc
+   ! print *,"2026090602 > ",get_timestep(fjulian("2026090602"))
+   ! do i =itime_min,itime_max
+   ! print *,i,grdate(get_cdate(i))
+   ! end do
+   !
+
  do xf=1,nf
     infile=flist(xf)
-    write( *,'(1x," :BUFRSPLIT:Infile  (",i3,"/",i3,") ",a)') xf,nf,trim(infile)
+    write( *,'(1x," :MBUFRSPLIT:Infile  (",i5,"/",i5,") ",a)') xf,nf,trim(infile)
     write( *,'(1x," :BUFRSPLITX:Outfile (basename) ",a)') trim(basefile0)
     Call OPEN_MBUFR(1, infile)
     ! --------------------------------------------------------------------
@@ -383,7 +425,7 @@ if (opsplit==5) call read_regional_center_codes
 	!end if     	
 	      			
 	 if ((itime<itime_min).or.(itime>itime_max)) then 
-	        txt=" :BUFRSPLIT: Warning! The date = "//trim(ccdate)//" is out of time window. Initial date="//trim(hdate0_min)
+         txt=" :BUFRSPLIT: Warning! The date = "//trim(ccdate)//" is out of time window. Data disregarded!"
 		if (msgct1<3) then 
 			print *,trim(color_text(txt, 33, .false.))
 			msgct1=msgct1+1
@@ -447,7 +489,20 @@ if (opsplit==5) call read_regional_center_codes
             I2=1
             I3=1
             out1=trim(out1)
+       elseif(opsplit==6) then
 
+         if (sec1%VerLocalTable==0) then
+           write(out1,'("T",a10)')ccdate
+           I1=1
+           I2=1
+           I3=itime
+         else
+            write(out1,'("Local-",a10)')ccdate
+
+           I1=1
+           I2=2
+           I3=itime
+         end if
        else
 			 print *,"I don't know"
 			 stop
@@ -466,7 +521,7 @@ if (opsplit==5) call read_regional_center_codes
 					else 
 						open(2, file=outfile,status='old')
 						close(2,status='delete')
-						txt=":BUFRSPLIT: Warning! Rewrinting file "//trim(outfile)
+						txt=":BUFRSPLIT: Warning! Rewriting file "//trim(outfile)
 						print *,trim(color_text(txt, 33, .true.))
 					end if 
 					!print *,"OX=",ox,"FLEN=",fx,trim(outfile)
@@ -520,7 +575,7 @@ if (opsplit==5) call read_regional_center_codes
  end do
  close (2)
  close (3)
- if (nf==nfmax) then 
+ if (nf>nfmax) then
    print *,trim(color_text("Warning! The Maximum number of the allowed input files was exceeded.", 33, .false.))
    print *,trim(color_text("         Some files have been skipped.", 33, .false.))
  end if 
@@ -528,14 +583,36 @@ if (opsplit==5) call read_regional_center_codes
  stop
 !}
  contains
+
+ !-------------------------------------------------------------------------------------
+ ! Get time step
+ !------------------------------------------------------------------------------------
+ ! This function returns time step from a julian date and time
+ ! based on initial date, final date and  time interval
+ !--------------------------------------------------------------------------------------
  function get_timestep(cdate); integer ::get_timestep
 	real*8,intent(in)::cdate
 	get_timestep=int((cdate-date_min)*24.0/real(hsin_inc))+1
  end function
  
+ !-------------------------------------------------------------------------------------
+ ! Get cdate
+ !------------------------------------------------------------------------------------
+ ! This function returns the central date and time relative to a time step
+ !--------------------------------------------------------------------------------------
+ function get_cdate(ts); real *8 ::get_cdate
+	integer,intent(in)::ts
+	get_cdate=date_min+((real(hsin_inc)/2.0)+(real(ts-1)*real(hsin_inc)))/24.0
+ end function
+
+ !-------------------------------------------------------------------------------------
+ ! Get synoptic time
+ !------------------------------------------------------------------------------------
+ ! This function returns the closer synoptic time from a provided hour
+ !--------------------------------------------------------------------------------------
  function get_synoptic_time(hour); integer::get_synoptic_time 
 	integer,intent(in)::hour
-	get_synoptic_time=int(real(hour)/real(hsin_inc)+0.5)*hsin_inc                  ! Arredondamento para hora sinotica central
+	get_synoptic_time=int(real(hour)/real(hsin_inc)+0.5)*hsin_inc
  end function 
  
  !-----------------------------------------------------------------------------|

@@ -40,7 +40,7 @@
 !#        grdate(jdate): Retorna caracter *19 que corresponde a data            #
 !#                       no calendario gregoriano,em formato utilizado          #
 !#                       pelo programa Grads                                    #
-!#        iso_8601_Basic: Retorna a data no formato da norma ISO8601            #
+!#        iso_date: Retorna a data no formato da norma ISO8601            #
 !#                                                                              #
 !#       Notas:                                                                 #
 !#        a) Para converter uma data do calendario gregoriano para juliano pode #
